@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 | Alcohols, Carboxylic Acids &amp; Esters — The Chemistry Classroom</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='3' fill='%232C6E63'/%3E%3Cellipse cx='20' cy='20' rx='17' ry='7' stroke='%232C6E63' stroke-width='2' fill='none'/%3E%3Cellipse cx='20' cy='20' rx='17' ry='7' stroke='%232C6E63' stroke-width='2' fill='none' transform='rotate(60 20 20)'/%3E%3Cellipse cx='20' cy='20' rx='17' ry='7' stroke='%232C6E63' stroke-width='2' fill='none' transform='rotate(120 20 20)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAFAF7;
+    --ink: #1B211F;
+    --ink-soft: #5B6360;
+    --teal: #2C6E63;
+    --teal-deep: #1F4F47;
+    --amber: #E8A23B;
+    --danger: #B3452D;
+    --line: #DEDDD5;
+    --tile-bg: #FFFFFF;
+    --radius: 3px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Header ---------- */
+
+  header{
+    padding: 2.75rem 1.5rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap: 0.35rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 1.4rem;
+  }
+
+  .back-link:hover{ color: var(--teal); }
+
+  h1{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--teal);
+  }
+
+  h1 .topic-no{ color: var(--teal); }
+
+  h1 .divider{
+    color: var(--teal);
+    font-weight: 400;
+    margin: 0 0.5rem;
+  }
+
+  /* ---------- Tabs ---------- */
+
+  nav.tabs{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    display:flex;
+    justify-content:center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  nav.tabs button{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    padding: 0.55rem 1.1rem;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  nav.tabs button:hover{ color: var(--ink); }
+
+  nav.tabs button.active{
+    color: var(--bg);
+    background: var(--ink);
+  }
+
+  nav.tabs button:focus-visible,
+  .video-placeholder:focus-visible,
+  .opt-btn:focus-visible,
+  .quiz-btn:focus-visible{
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Main / panels ---------- */
+
+  main{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.75rem 1.5rem 5rem;
+  }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; animation: fade 0.35s ease; }
+
+  @keyframes fade{
+    from{ opacity:0; transform: translateY(4px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  /* ---------- Video placeholder ---------- */
+
+  .video-placeholder{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--tile-bg);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 0.75rem;
+  }
+
+  .video-placeholder .play{
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .video-placeholder .play svg{ width: 16px; height: 16px; }
+
+  .video-placeholder .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Content placeholder ---------- */
+
+  .content-placeholder{
+    margin-top: 1.25rem;
+    padding: 1.75rem;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    min-height: 140px;
+  }
+
+  .content-placeholder .label{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Quiz ---------- */
+
+  .quiz-progress{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.9rem;
+  }
+
+  .quiz-progress-bar{
+    height: 3px;
+    background: var(--line);
+    border-radius: 999px;
+    margin-bottom: 1.6rem;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill{
+    height: 100%;
+    background: var(--teal);
+    width: 0%;
+    transition: width 0.25s ease;
+  }
+
+  .quiz-card{ display:none; }
+  .quiz-card.active{ display:block; animation: fade 0.3s ease; }
+
+  .q-stem{
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    margin-bottom: 1.1rem;
+  }
+
+  .q-stem ol, .q-stem ul{
+    margin: 0.75rem 0 0 1.3rem;
+  }
+
+  .q-stem li{ margin-bottom: 0.35rem; }
+
+  .q-image-placeholder{
+    width: 100%;
+    min-height: 160px;
+    background: var(--tile-bg);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 0.5rem;
+    margin: 0.75rem 0 1.1rem;
+  }
+
+  .q-image-placeholder svg{ width: 26px; height: 26px; opacity: 0.35; }
+
+  .q-image-placeholder .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .q-scheme{
+    display:flex;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0.9rem 0 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .q-scheme .box{
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.8rem;
+    background: var(--tile-bg);
+  }
+
+  .q-scheme .arrow{
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    text-align:center;
+  }
+
+  .q-options{
+    display:flex;
+    flex-direction:column;
+    gap: 0.55rem;
+  }
+
+  .opt-btn{
+    display:flex;
+    align-items:center;
+    gap: 0.75rem;
+    text-align:left;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--tile-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .opt-btn:hover:not(:disabled){ border-color: var(--teal); }
+
+  .opt-btn .opt-letter{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--teal);
+    flex-shrink:0;
+    width: 1.4rem;
+  }
+
+  .opt-btn.selected{ border-color: var(--ink); background: #F2F1EC; }
+
+  .opt-btn.correct{ border-color: var(--teal); background: #EAF3F1; }
+  .opt-btn.correct .opt-letter{ color: var(--teal); }
+
+  .opt-btn.incorrect{ border-color: var(--danger); background: #FBEEEB; }
+  .opt-btn.incorrect .opt-letter{ color: var(--danger); }
+
+  .opt-btn:disabled{ cursor: default; }
+
+  .opt-table-row{ flex-direction:column; align-items:flex-start; gap: 0.25rem; }
+  .opt-table-row .opt-cols{ display:flex; gap: 1.5rem; font-size: 0.88rem; color: var(--ink-soft); padding-left: 2.15rem; }
+  .opt-table-head{
+    display:flex;
+    gap: 1.5rem;
+    padding-left: 2.15rem;
+    margin-bottom: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .opt-image-slot{
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: #FCFCFA;
+  }
+
+  .opt-image-slot .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .q-options.image-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .q-options.image-grid .opt-btn{
+    flex-direction:column;
+    align-items:stretch;
+    gap: 0.5rem;
+  }
+
+  .q-options.image-grid .opt-letter{ width: auto; }
+
+  .quiz-feedback{
+    display:none;
+    margin-top: 1.1rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .quiz-feedback.show{ display:block; animation: fade 0.3s ease; }
+
+  .quiz-feedback.right{ background: #EAF3F1; border: 1px solid var(--teal); }
+  .quiz-feedback.wrong{ background: #FBEEEB; border: 1px solid var(--danger); }
+
+  .quiz-feedback .fb-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .quiz-feedback.right .fb-title{ color: var(--teal-deep); }
+  .quiz-feedback.wrong .fb-title{ color: var(--danger); }
+
+  .quiz-actions{ margin-top: 1.4rem; display:flex; justify-content:flex-end; }
+
+  .quiz-btn{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--bg);
+    transition: opacity 0.15s ease;
+  }
+
+  .quiz-btn:disabled{ opacity: 0.35; cursor: default; }
+
+  /* ---------- Quiz intro / results ---------- */
+
+  .quiz-state{ display:none; text-align:center; }
+  .quiz-state.active{ display:block; animation: fade 0.3s ease; }
+
+  .quiz-state .kicker{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.6rem;
+  }
+
+  .quiz-state h2{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .quiz-state p{ color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 1.6rem; }
+
+  .score-big{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .score-pct{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.8rem;
+  }
+
+  .revise-list{
+    text-align:left;
+    max-width: 420px;
+    margin: 0 auto 1.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+  }
+
+  .revise-list .revise-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .revise-list ul{ margin-left: 1.1rem; color: var(--ink-soft); font-size: 0.88rem; }
+  .revise-list li{ margin-bottom: 0.3rem; }
+
+  #quiz-play{ display:none; }
+
+  footer{
+    text-align:center;
+    padding: 2rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="https://ngchb.github.io/thechemclassroom/">&larr; All topics</a>
+  <h1><span class="topic-no">20</span><span class="divider">|</span>Alcohols, Carboxylic Acids &amp; Esters</h1>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Lessons">
+  <button class="tab-btn active" data-panel="l1" role="tab" aria-selected="true">L1</button>
+  <button class="tab-btn" data-panel="l2" role="tab" aria-selected="false">L2</button>
+  <button class="tab-btn" data-panel="l3" role="tab" aria-selected="false">L3</button>
+  <button class="tab-btn" data-panel="l4" role="tab" aria-selected="false">L4</button>
+  <button class="tab-btn" data-panel="practice" role="tab" aria-selected="false">Practice</button>
+</nav>
+
+<main>
+
+  <section class="panel active" id="l1" role="tabpanel">
+    <div class="video-placeholder" tabindex="0">
+      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="label">YouTube embed</div>
+    </div>
+    <div class="content-placeholder"><div class="label">Description</div></div>
+  </section>
+
+  <section class="panel" id="l2" role="tabpanel">
+    <div class="video-placeholder" tabindex="0">
+      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="label">YouTube embed</div>
+    </div>
+    <div class="content-placeholder"><div class="label">Description</div></div>
+  </section>
+
+  <section class="panel" id="l3" role="tabpanel">
+    <div class="video-placeholder" tabindex="0">
+      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="label">YouTube embed</div>
+    </div>
+    <div class="content-placeholder"><div class="label">Description</div></div>
+  </section>
+
+  <section class="panel" id="l4" role="tabpanel">
+    <div class="video-placeholder" tabindex="0">
+      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="label">YouTube embed</div>
+    </div>
+    <div class="content-placeholder"><div class="label">Description</div></div>
+  </section>
+
+  <section class="panel" id="practice" role="tabpanel">
+
+    <div class="quiz-state active" id="quiz-intro">
+      <div class="kicker">Practice quiz</div>
+      <h2>Alcohols — 14 questions</h2>
+      <p>Multiple choice. You'll see the correct answer and explanation after each question.</p>
+      <button class="quiz-btn" id="quiz-start">Start quiz</button>
+    </div>
+
+    <div id="quiz-play">
+      <div class="quiz-progress" id="quiz-progress-label">Question 1 of 14</div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+      <div id="quiz-card-mount"></div>
+    </div>
+
+    <div class="quiz-state" id="quiz-results">
+      <div class="kicker">Quiz complete</div>
+      <div class="score-big" id="score-big">0 / 14</div>
+      <div class="score-pct" id="score-pct">0%</div>
+      <div class="revise-list" id="revise-list">
+        <div class="revise-title">Concepts to revise</div>
+        <ul id="revise-items"></ul>
+      </div>
+      <button class="quiz-btn" id="quiz-restart">Restart quiz</button>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>THE CHEMISTRY CLASSROOM &middot; @bernardng</footer>
+
+<script>
+  /* ---------- Tabs ---------- */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.dataset.panel).classList.add('active');
+    });
+  });
+
+  /* ---------- Quiz data ---------- */
+  const imgIconSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
+
+  const quizData = [
+    {
+      stem: "Which statements about alcohols are correct?",
+      list: [
+        "All alcohols contain the hydroxide ion, OH⁻.",
+        "Ethanol can be formed from ethene using a reaction catalysed by yeast.",
+        "Methanol can be oxidised to methanoic acid.",
+        "The alcohols X and Y shown are isomers."
+      ],
+      image: "Structural formulae of alcohols X and Y",
+      options: ["1 and 2", "1 and 3", "2 and 4", "3 and 4"],
+      correct: 3,
+      explanation: "Statement 1 is wrong: alcohols contain a covalently bonded –OH group, not the ionic hydroxide ion. Statement 2 is wrong: ethene is converted to ethanol by catalytic addition of steam, not by fermentation with yeast (yeast ferments glucose, not ethene). Statement 3 is correct: primary alcohols such as methanol oxidise to their corresponding carboxylic acid, methanoic acid. Statement 4 is correct: X and Y share the molecular formula C₄H₁₀O but have the –OH group on a different carbon, making them positional isomers.",
+      concept: "Alcohol structure & isomerism"
+    },
+    {
+      stem: "Which alcohol will, on oxidation, produce CH₃CH₂CO₂H?",
+      options: ["CH₃OH", "CH₃CH₂OH", "CH₃CH₂CH₂OH", "HOCH₂CH₂CH₂OH"],
+      correct: 2,
+      explanation: "Oxidising a primary alcohol turns its –CH₂OH end into a –CO₂H group without changing the carbon skeleton. CH₃CH₂CO₂H (propanoic acid) has three carbons, so the alcohol needed is the three-carbon primary alcohol propan-1-ol, CH₃CH₂CH₂OH. Option D is a diol and would not give this single-acid product.",
+      concept: "Oxidation of alcohols"
+    },
+    {
+      stem: "The structural formulae of some organic compounds are shown below. Which compounds are alcohols?",
+      image: "Structural formulae of compounds 1–4",
+      options: ["1 only", "1 and 2 only", "1, 2 and 3 only", "4"],
+      correct: 2,
+      explanation: "Compounds 1 and 2 are straight-chain and branched alcohols (propan-1-ol and propan-2-ol), each with a single –OH group. Compound 3 is a diol (propane-1,3-diol) — it still contains only –OH groups, so it's also an alcohol. Compound 4 has a C=O double bond as well as an –OH on the same carbon, making it a carboxylic acid (–CO₂H group), not an alcohol.",
+      concept: "Identifying alcohols vs carboxylic acids"
+    },
+    {
+      stem: "Which information is correct regarding the formation of ethanol by the process of fermentation?",
+      optionsType: "table",
+      tableHead: ["Substances fermented", "Gas evolved during fermentation"],
+      options: [
+        ["carbohydrates", "carbon dioxide"],
+        ["carbohydrates", "carbon monoxide"],
+        ["hydrocarbons", "carbon dioxide"],
+        ["hydrocarbons", "carbon monoxide"]
+      ],
+      correct: 0,
+      explanation: "Fermentation uses yeast enzymes to convert carbohydrates (sugars such as glucose) into ethanol, releasing carbon dioxide: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Hydrocarbons cannot be fermented, and carbon monoxide is not produced.",
+      concept: "Fermentation"
+    },
+    {
+      stem: "The boiling points of the alcohols increase as their relative molecular mass increases. Which alcohol has the highest boiling point?",
+      options: ["butanol", "ethanol", "methanol", "propanol"],
+      correct: 0,
+      explanation: "Within a homologous series, boiling point rises as the carbon chain — and so the relative molecular mass — gets longer, because there's more surface area for van der Waals forces between molecules. Of the four alcohols listed, butanol has the longest chain and highest relative molecular mass, so it has the highest boiling point.",
+      concept: "Trends in a homologous series"
+    },
+    {
+      stem: "The list shows three chemical reactions. In which reactions is water a product?",
+      list: ["combustion of ethanol", "fermentation of glucose", "reaction of ethanol with ethanoic acid to give an ester"],
+      options: ["1 and 2 only", "1 and 3 only", "2 and 3 only", "1, 2 and 3"],
+      correct: 1,
+      explanation: "Combustion of ethanol produces carbon dioxide and water: C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O. Esterification of ethanol with ethanoic acid also produces water alongside the ester: CH₃CO₂H + C₂H₅OH → CH₃CO₂C₂H₅ + H₂O. Fermentation of glucose produces ethanol and carbon dioxide only — no water is formed.",
+      concept: "Reactions of ethanol"
+    },
+    {
+      stem: "Which substances will burn in air and give carbon dioxide amongst the combustion products?",
+      list: ["calcium carbonate", "ethane", "ethanol", "methanol"],
+      options: ["1 and 2 only", "2 and 3 only", "1, 2 and 3 only", "2, 3 and 4 only"],
+      correct: 3,
+      explanation: "Ethane, ethanol and methanol all contain carbon and hydrogen (and, for the alcohols, oxygen) and burn in air to form carbon dioxide and water. Calcium carbonate does not burn — heating it causes thermal decomposition to calcium oxide and carbon dioxide, which is not combustion.",
+      concept: "Combustion of organic compounds"
+    },
+    {
+      stem: "An organic compound has an empirical formula C₂H₄O. What is the compound?",
+      options: ["butanoic acid", "butanol", "ethanoic acid", "ethanol"],
+      correct: 0,
+      explanation: "Compare each molecular formula to the empirical ratio C:H:O = 2:4:1. Butanoic acid, C₄H₈O₂, simplifies exactly to C₂H₄O. Butanol (C₄H₁₀O) and ethanol (C₂H₆O) don't have enough oxygen relative to hydrogen to match, and ethanoic acid (C₂H₄O₂) simplifies to CH₂O, not C₂H₄O.",
+      concept: "Empirical formulae"
+    },
+    {
+      stem: "Which statement about ethanol is correct?",
+      options: [
+        "It is an unsaturated compound.",
+        "It is formed by the catalytic addition of steam to ethene.",
+        "It is formed by the oxidation of ethanoic acid.",
+        "It reacts with ethyl ethanoate to form an acid."
+      ],
+      correct: 1,
+      explanation: "Ethanol is manufactured industrially by passing ethene and steam over a phosphoric acid catalyst — the catalytic addition of steam to ethene. Ethanol is saturated (no C=C bond), so A is wrong. Oxidation runs the other way — ethanol oxidises to ethanoic acid, not the reverse — so C is wrong. Ethanol does not react with ethyl ethanoate under normal conditions, so D is wrong.",
+      concept: "Manufacture and properties of ethanol"
+    },
+    {
+      stem: "Alcohols can be oxidised to form another homologous series of compounds. What would be the product of the oxidation of propanol?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      correct: 1,
+      explanation: "Propan-1-ol is a primary alcohol, so full oxidation converts the –CH₂OH group into a –CO₂H group without changing the number of carbons. The product is propanoic acid, CH₃CH₂CO₂H — option B. The other options show either an incorrectly placed double bond, an aldehyde rather than the fully oxidised product, or an extra carbon in the chain.",
+      concept: "Oxidation of primary alcohols"
+    },
+    {
+      stem: "Acidified potassium dichromate(VI) can be used to detect the presence of ethanol vapour in the breath of a person who has consumed an ethanol-containing drink. A colour change from orange to green is observed if ethanol is present. This shows that ethanol is",
+      image: "Diagram of filter paper moistened with acidified potassium dichromate(VI) near a person's breath",
+      options: ["an alkali.", "an indicator.", "an oxidising agent.", "a reducing agent."],
+      correct: 3,
+      explanation: "Acidified potassium dichromate(VI) is the oxidising agent here: it is itself reduced from orange Cr₂O₇²⁻ (chromium VI) to green Cr³⁺ (chromium III) as it oxidises the ethanol. Because ethanol brings about this reduction — donating electrons and getting oxidised itself — ethanol is acting as the reducing agent.",
+      concept: "Redox reactions of alcohols"
+    },
+    {
+      stem: "Which compound is obtained by the oxidation of ethanol, C₂H₅OH?",
+      options: ["HCO₂CH₃", "C₂H₅CO₂H", "CH₃OH", "CH₃CO₂H"],
+      correct: 3,
+      explanation: "Oxidising a primary alcohol converts –CH₂OH into –CO₂H without adding or removing carbon atoms. Ethanol (2 carbons) therefore oxidises to ethanoic acid, CH₃CO₂H (also 2 carbons). C₂H₅CO₂H has three carbons so it can't be the product; CH₃OH would be a reduction product, not oxidation; HCO₂CH₃ is an ester, not a direct oxidation product of ethanol.",
+      concept: "Oxidation of alcohols"
+    },
+    {
+      stem: "A compound, X, has a molecular formula C₄H₈O₂ and can be prepared by the reactions shown. What is the structural formula of X?",
+      scheme: ["ethanol", "oxidation", "Y", "+ ethanol", "X"],
+      options: ["HCO₂CH₂CH₂CH₃", "CH₃CO₂CH₂CH₃", "CH₃CH₂CO₂CH₃", "CH₃CH₂CH₂CO₂H"],
+      correct: 1,
+      explanation: "Oxidising ethanol gives Y = ethanoic acid, CH₃CO₂H. Reacting ethanoic acid with a further molecule of ethanol (esterification) gives the ester ethyl ethanoate, CH₃CO₂CH₂CH₃, which has molecular formula C₄H₈O₂ — matching X. The other options have the acid and alcohol parts the wrong way round, or the wrong number of carbons.",
+      concept: "Esterification"
+    },
+    {
+      stem: "The list shows reactions in which ethanol is either a reactant or a product. In which reactions is water also either a reactant or a product?",
+      list: ["combustion of ethanol", "conversion of ethene to ethanol", "fermentation of glucose", "oxidation of ethanol to ethanoic acid"],
+      options: ["1, 3 and 4", "2, 3 and 4", "1, 2 and 4", "3 only"],
+      correct: 2,
+      explanation: "Combustion of ethanol produces water as a product (C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O). Converting ethene to ethanol is a hydration reaction, so steam (water) is a reactant (C₂H₄ + H₂O → C₂H₅OH). Oxidising ethanol to ethanoic acid also produces water as a by-product (C₂H₅OH + 2[O] → CH₃CO₂H + H₂O). Fermentation of glucose to ethanol and carbon dioxide does not involve water as a reactant or product, so reaction 3 is excluded.",
+      concept: "Water in alcohol reactions"
+    }
+  ];
+
+  /* ---------- Quiz state ---------- */
+  let current = 0;
+  let score = 0;
+  let answered = false;
+  const missedConcepts = new Set();
+  const letters = ['A','B','C','D'];
+
+  const mount = document.getElementById('quiz-card-mount');
+  const progressLabel = document.getElementById('quiz-progress-label');
+  const progressFill = document.getElementById('quiz-progress-fill');
+
+  function renderQuestion(){
+    const q = quizData[current];
+    answered = false;
+    progressLabel.textContent = `Question ${current + 1} of ${quizData.length}`;
+    progressFill.style.width = `${(current / quizData.length) * 100}%`;
+
+    let html = `<div class="quiz-card active"><div class="q-stem"><p>${q.stem}</p>`;
+
+    if (q.list){
+      html += '<ol>' + q.list.map(item => `<li>${item}</li>`).join('') + '</ol>';
+    }
+
+    if (q.scheme){
+      html += `<div class="q-scheme">
+        <div class="box">${q.scheme[0]}</div>
+        <div class="arrow">${q.scheme[1]}<br>&rarr;</div>
+        <div class="box">${q.scheme[2]}</div>
+        <div class="arrow">${q.scheme[3]}<br>&rarr;</div>
+        <div class="box">${q.scheme[4]}</div>
+      </div>`;
+    }
+
+    html += '</div>';
+
+    if (q.image){
+      html += `<div class="q-image-placeholder">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>`;
+    }
+
+    if (q.optionsType === 'table'){
+      html += `<div class="opt-table-head"><span>${q.tableHead[0]}</span><span>${q.tableHead[1]}</span></div>`;
+      html += '<div class="q-options">';
+      q.options.forEach((row, i) => {
+        html += `<button class="opt-btn opt-table-row" data-index="${i}">
+          <div style="display:flex; align-items:center; gap:0.75rem;"><span class="opt-letter">${letters[i]}</span></div>
+          <div class="opt-cols"><span>${row[0]}</span><span>${row[1]}</span></div>
+        </button>`;
+      });
+      html += '</div>';
+    } else if (q.optionsType === 'image'){
+      html += '<div class="q-options image-grid">';
+      q.options.forEach((opt, i) => {
+        html += `<button class="opt-btn" data-index="${i}">
+          <span class="opt-letter">${letters[i]}</span>
+          <div class="opt-image-slot">${imgIconSVG}<span class="label" style="margin-left:0.4rem;">Image placeholder</span></div>
+        </button>`;
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="q-options">';
+      q.options.forEach((opt, i) => {
+        html += `<button class="opt-btn" data-index="${i}"><span class="opt-letter">${letters[i]}</span><span>${opt}</span></button>`;
+      });
+      html += '</div>';
+    }
+
+    html += `<div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="quiz-actions"><button class="quiz-btn" id="quiz-action" disabled>Check answer</button></div>
+    </div>`;
+
+    mount.innerHTML = html;
+    bindQuestionEvents(q);
+  }
+
+  function bindQuestionEvents(q){
+    const optBtns = mount.querySelectorAll('.opt-btn');
+    const actionBtn = document.getElementById('quiz-action');
+    let selected = null;
+
+    optBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (answered) return;
+        optBtns.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selected = parseInt(btn.dataset.index, 10);
+        actionBtn.disabled = false;
+      });
+    });
+
+    actionBtn.addEventListener('click', () => {
+      if (!answered){
+        answered = true;
+        const isCorrect = selected === q.correct;
+        if (isCorrect) score++; else missedConcepts.add(q.concept);
+
+        optBtns.forEach((b, i) => {
+          b.disabled = true;
+          if (i === q.correct) b.classList.add('correct');
+          if (i === selected && !isCorrect) b.classList.add('incorrect');
+        });
+
+        const fb = document.getElementById('quiz-feedback');
+        fb.classList.add('show', isCorrect ? 'right' : 'wrong');
+        fb.innerHTML = `<div class="fb-title">${isCorrect ? 'Correct' : 'Not quite'}</div><div>${q.explanation}</div>`;
+
+        actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
+      } else {
+        current++;
+        if (current < quizData.length){
+          renderQuestion();
+        } else {
+          showResults();
+        }
+      }
+    });
+  }
+
+  function showResults(){
+    document.getElementById('quiz-play').style.display = 'none';
+    const resultsEl = document.getElementById('quiz-results');
+    resultsEl.classList.add('active');
+    document.getElementById('score-big').textContent = `${score} / ${quizData.length}`;
+    document.getElementById('score-pct').textContent = `${Math.round((score / quizData.length) * 100)}%`;
+
+    const reviseItems = document.getElementById('revise-items');
+    const reviseBox = document.getElementById('revise-list');
+    if (missedConcepts.size === 0){
+      reviseBox.innerHTML = '<div class="revise-title">Nice work — no gaps to revise.</div>';
+    } else {
+      reviseItems.innerHTML = Array.from(missedConcepts).map(c => `<li>${c}</li>`).join('');
+    }
+  }
+
+  document.getElementById('quiz-start').addEventListener('click', () => {
+    document.getElementById('quiz-intro').classList.remove('active');
+    document.getElementById('quiz-play').style.display = 'block';
+    renderQuestion();
+  });
+
+  document.getElementById('quiz-restart').addEventListener('click', () => {
+    current = 0; score = 0; answered = false; missedConcepts.clear();
+    document.getElementById('quiz-results').classList.remove('active');
+    document.getElementById('quiz-intro').classList.add('active');
+  });
+</script>
+
+</body>
+</html>
