@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chemistry Classroom</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FFFFFF'/%3E%3Cpath d='M40 14H60V44L78 78C81 84 77 90 70 90H30C23 90 19 84 22 78L40 44V14Z' fill='%23FFFFFF' stroke='%231F5C4E' stroke-width='6'/%3E%3Cpath d='M28 66H72L67 78C65 85 60 90 52 90H48C40 90 35 85 33 78L28 66Z' fill='%233E8E7E'/%3E%3Crect x='37' y='10' width='26' height='7' rx='2' fill='%231F5C4E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-line:#E3E9E5;
+    --paper:#FFFFFF;
+    --ink:#152230;
+    --ink-soft:#5B6B72;
+    --accent:#1F5C4E;
+    --amber:#3E8E7E;
+    --pale-green:#E6F2ED;
+    --pale-accent:#8FB8AC;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--bg-line) 1px, transparent 1px) 0 0/100% 34px,
+      linear-gradient(90deg, var(--bg-line) 1px, transparent 1px) 0 0/34px 100%,
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk', sans-serif;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(8px);
+    background:rgba(243,246,241,0.86);
+    border-bottom:1px solid var(--bg-line);
+  }
+  .topbar-inner{
+    max-width:1080px; margin:0 auto; padding:18px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{display:flex; flex-direction:column; line-height:1.05;}
+  .brand-name{font-size:1.85rem; font-weight:700; letter-spacing:-0.01em;}
+  .brand-sub{
+    font-family:'Inter', sans-serif; font-weight:500; font-size:0.78rem; color:var(--amber);
+    letter-spacing:0.02em; margin-top:3px;
+  }
+  .tabs{display:flex; gap:6px; background:var(--paper); border:1px solid var(--bg-line); padding:4px; border-radius:999px;}
+  .tab-btn{
+    appearance:none; border:none; background:transparent; cursor:pointer;
+    padding:8px 16px; border-radius:999px; font-family:'Inter'; font-weight:600; font-size:0.86rem;
+    color:var(--ink-soft); transition:background .2s ease, color .2s ease;
+  }
+  .tab-btn.active{background:var(--ink); color:#fff;}
+  .tab-btn:not(.active):hover{color:var(--ink);}
+
+  .panel{max-width:1080px; margin:0 auto; padding:44px 24px 90px; display:none;}
+  .panel.active{display:block;}
+
+  .card{background:var(--paper); border:1px solid var(--bg-line); border-radius:var(--radius); padding:26px; max-width:60ch;}
+  .card p{color:var(--ink-soft); line-height:1.6; font-size:0.95rem; margin:0;}
+
+  .tile-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px;
+    margin-top:18px;
+  }
+  .tile{
+    text-align:left; cursor:pointer; border-radius:10px; padding:12px 12px 14px;
+    border:1px solid var(--bg-line); background:var(--paper);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    display:flex; flex-direction:column; gap:18px; min-height:104px;
+  }
+  .tile:hover{transform:translateY(-3px); box-shadow:0 10px 22px -14px rgba(21,34,48,0.35); border-color:var(--accent); background:var(--pale-green);}
+  .tile:hover .tile-symbol{color:var(--pale-accent);}
+  .tile-top{display:flex; justify-content:flex-end;}
+  .tile-symbol{font-family:'IBM Plex Mono'; font-size:2.34rem; font-weight:600; color:var(--accent);}
+  .tile-name{font-size:0.82rem; line-height:1.25; font-weight:600; color:var(--ink);}
+
+  footer{text-align:center; padding:30px 24px 50px; color:var(--ink-soft); font-size:0.8rem;}
+
+  @media (max-width:760px){
+    .topbar-inner{flex-direction:column; align-items:flex-start; gap:14px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-name">The Chemistry Classroom</div>
+      <div class="brand-sub">@bernardng</div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="topics">Topics</button>
+      <button class="tab-btn" data-tab="practical">Practical</button>
+      <button class="tab-btn" data-tab="about">About</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel active" id="panel-topics">
+  <div class="tile-grid" id="grid-topics"></div>
+</div>
+
+<div class="panel" id="panel-practical">
+  <div class="tile-grid" id="grid-practical"></div>
+</div>
+
+<div class="panel" id="panel-about">
+  <div class="card">
+    <p>A self-paced companion for O Level Chemistry: complete syllabus coverage plus dedicated practice for practical technique.</p>
+  </div>
+</div>
+
+<footer>The Chemistry Classroom · @bernardng</footer>
+
+<script>
+  const topics = [
+    {code:'1A', name:'Experimental Chemistry', practical:true},
+    {code:'1B', name:'Purification & Separation', practical:true},
+    {code:'2',  name:'Kinetic Particle Theory'},
+    {code:'3',  name:'Atomic Structure'},
+    {code:'4',  name:'Chemical Bonding'},
+    {code:'5',  name:'Structure & Properties'},
+    {code:'6',  name:'Chemical Formula & Equations'},
+    {code:'7A', name:'Mole Concept'},
+    {code:'7B', name:'Chemical Calculations'},
+    {code:'8',  name:'Acids and Bases'},
+    {code:'9',  name:'Salts'},
+    {code:'10', name:'Ammonia'},
+    {code:'11', name:'Qualitative Analysis', practical:true},
+    {code:'12', name:'Oxidation and Reduction'},
+    {code:'13', name:'Electrochemistry'},
+    {code:'14', name:'The Periodic Table'},
+    {code:'15', name:'The Reactivity Series'},
+    {code:'16', name:'Chemical Energetics'},
+    {code:'17', name:'Rate of Reactions'},
+    {code:'18', name:'Fuels & Crude Oil'},
+    {code:'19', name:'Hydrocarbons'},
+    {code:'20', name:'Alcohols, Carboxylic Acids & Esters'},
+    {code:'21', name:'Polymers'},
+    {code:'22', name:'Maintaining Air Quality'},
+  ];
+
+  function slug(code){ return code.toLowerCase().replace(/[^a-z0-9]/g,''); }
+
+  function tileHTML(t){
+    return `<a class="tile" href="https://ngchb.github.io/thechemclassroom/${slug(t.code)}" target="_blank">
+      <div class="tile-top"><span class="tile-symbol">${t.code}</span></div>
+      <span class="tile-name">${t.name}</span>
+    </a>`;
+  }
+
+  document.getElementById('grid-topics').innerHTML = topics.map(tileHTML).join('');
+  document.getElementById('grid-practical').innerHTML = topics.filter(t=>t.practical).map(tileHTML).join('');
+
+  function switchTab(name){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+name));
+  }
+  document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
+</script>
+
+</body>
+</html>
