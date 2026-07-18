@@ -115,7 +115,6 @@
   }
 
   nav.tabs button:focus-visible,
-  .video-placeholder:focus-visible,
   .opt-btn:focus-visible,
   .quiz-btn:focus-visible{
     outline: 2px solid var(--teal);
@@ -138,40 +137,22 @@
     to{ opacity:1; transform: translateY(0); }
   }
 
-  /* ---------- Video placeholder ---------- */
+  /* ---------- Video embed ---------- */
 
-  .video-placeholder{
-    position: relative;
+  .video-container{
     width: 100%;
     aspect-ratio: 16 / 9;
     background: var(--tile-bg);
-    border: 1px dashed var(--line);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap: 0.75rem;
+    overflow: hidden;
   }
 
-  .video-placeholder .play{
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .video-placeholder .play svg{ width: 16px; height: 16px; }
-
-  .video-placeholder .label{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+  .video-container iframe{
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
   }
 
   /* ---------- Content placeholder ---------- */
@@ -233,17 +214,32 @@
   .q-stem li{ margin-bottom: 0.35rem; }
 
   .q-image-placeholder{
+    position: relative;
     width: 100%;
     min-height: 160px;
     background: var(--tile-bg);
     border: 1px dashed var(--line);
     border-radius: var(--radius);
-    display:flex;
+    overflow: hidden;
+    margin: 0.75rem 0 1.1rem;
+  }
+
+  .q-image-placeholder img{
+    display:block;
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    object-fit: contain;
+  }
+
+  .q-image-placeholder .fallback{
+    position: absolute;
+    inset: 0;
+    display:none;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     gap: 0.5rem;
-    margin: 0.75rem 0 1.1rem;
   }
 
   .q-image-placeholder svg{ width: 26px; height: 26px; opacity: 0.35; }
@@ -338,14 +334,28 @@
   }
 
   .opt-image-slot{
+    position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
     border: 1px dashed var(--line);
     border-radius: var(--radius);
-    display:flex;
+    overflow: hidden;
+    background: #FCFCFA;
+  }
+
+  .opt-image-slot img{
+    display:block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .opt-image-slot .fallback{
+    position: absolute;
+    inset: 0;
+    display:none;
     align-items:center;
     justify-content:center;
-    background: #FCFCFA;
   }
 
   .opt-image-slot .label{
@@ -498,33 +508,29 @@
 <main>
 
   <section class="panel active" id="l1" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/yEY2swklE5Y?" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder"><div class="label">Description</div></div>
   </section>
 
   <section class="panel" id="l2" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_L2" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder"><div class="label">Description</div></div>
   </section>
 
   <section class="panel" id="l3" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_L3" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder"><div class="label">Description</div></div>
   </section>
 
   <section class="panel" id="l4" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play"><svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg></div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_L4" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder"><div class="label">Description</div></div>
   </section>
@@ -742,7 +748,11 @@
     html += '</div>';
 
     if (q.image){
-      html += `<div class="q-image-placeholder">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>`;
+      const imgUrl = `https://ngchb.github.io/thechemclassroom/images/q${current + 1}.png`;
+      html += `<div class="q-image-placeholder">
+        <img src="${imgUrl}" alt="${q.image}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="fallback">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>
+      </div>`;
     }
 
     if (q.optionsType === 'table'){
@@ -758,9 +768,14 @@
     } else if (q.optionsType === 'image'){
       html += '<div class="q-options image-grid">';
       q.options.forEach((opt, i) => {
+        const letter = letters[i].toLowerCase();
+        const imgUrl = `https://ngchb.github.io/thechemclassroom/images/q${current + 1}-${letter}.png`;
         html += `<button class="opt-btn" data-index="${i}">
           <span class="opt-letter">${letters[i]}</span>
-          <div class="opt-image-slot">${imgIconSVG}<span class="label" style="margin-left:0.4rem;">Image placeholder</span></div>
+          <div class="opt-image-slot">
+            <img src="${imgUrl}" alt="Option ${letters[i]} structure" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="fallback">${imgIconSVG}<span class="label" style="margin-left:0.4rem;">Image placeholder</span></div>
+          </div>
         </button>`;
       });
       html += '</div>';
