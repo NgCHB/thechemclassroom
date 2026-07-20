@@ -538,7 +538,7 @@
 
   <section class="panel active" id="l1" role="tabpanel">
     <div class="video-container">
-      <iframe src="https://www.youtube.com/embed/yEY2swklE5Y?" title="YouTube video player" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_L1" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder">
       <div class="label">Learning outcomes</div>
@@ -646,6 +646,7 @@
         "The alcohols X and Y shown are isomers."
       ],
       image: "Structural formulae of alcohols X and Y",
+      imageFile: "20-1.jpg",
       options: ["1 and 2", "1 and 3", "2 and 4", "3 and 4"],
       correct: 3,
       explanation: "Statement 1 is wrong: alcohols contain a covalently bonded –OH group, not the ionic hydroxide ion. Statement 2 is wrong: ethene is converted to ethanol by catalytic addition of steam, not by fermentation with yeast (yeast ferments glucose, not ethene). Statement 3 is correct: primary alcohols such as methanol oxidise to their corresponding carboxylic acid, methanoic acid. Statement 4 is correct: X and Y share the molecular formula C₄H₁₀O but have the –OH group on a different carbon, making them positional isomers.",
@@ -661,6 +662,7 @@
     {
       stem: "The structural formulae of some organic compounds are shown below. Which compounds are alcohols?",
       image: "Structural formulae of compounds 1–4",
+      imageFile: "xx.jpg",
       options: ["1 only", "1 and 2 only", "1, 2 and 3 only", "4"],
       correct: 2,
       explanation: "Compounds 1 and 2 are straight-chain and branched alcohols (propan-1-ol and propan-2-ol), each with a single –OH group. Compound 3 is a diol (propane-1,3-diol) — it still contains only –OH groups, so it's also an alcohol. Compound 4 has a C=O double bond as well as an –OH on the same carbon, making it a carboxylic acid (–CO₂H group), not an alcohol.",
@@ -726,6 +728,7 @@
       stem: "Alcohols can be oxidised to form another homologous series of compounds. What would be the product of the oxidation of propanol?",
       optionsType: "image",
       options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
       correct: 1,
       explanation: "Propan-1-ol is a primary alcohol, so full oxidation converts the –CH₂OH group into a –CO₂H group without changing the number of carbons. The product is propanoic acid, CH₃CH₂CO₂H — option B. The other options show either an incorrectly placed double bond, an aldehyde rather than the fully oxidised product, or an extra carbon in the chain.",
       concept: "Oxidation of primary alcohols"
@@ -733,6 +736,7 @@
     {
       stem: "Acidified potassium dichromate(VI) can be used to detect the presence of ethanol vapour in the breath of a person who has consumed an ethanol-containing drink. A colour change from orange to green is observed if ethanol is present. This shows that ethanol is",
       image: "Diagram of filter paper moistened with acidified potassium dichromate(VI) near a person's breath",
+      imageFile: "xx.jpg",
       options: ["an alkali.", "an indicator.", "an oxidising agent.", "a reducing agent."],
       correct: 3,
       explanation: "Acidified potassium dichromate(VI) is the oxidising agent here: it is itself reduced from orange Cr₂O₇²⁻ (chromium VI) to green Cr³⁺ (chromium III) as it oxidises the ethanol. Because ethanol brings about this reduction — donating electrons and getting oxidised itself — ethanol is acting as the reducing agent.",
@@ -799,7 +803,7 @@
     html += '</div>';
 
     if (q.image){
-      const imgUrl = `/thechemclassroom/images/q${current + 1}.jpg`;
+      const imgUrl = `/thechemclassroom/images/${q.imageFile || 'xx.jpg'}`;
       html += `<div class="q-image-placeholder">
         <img src="${imgUrl}" alt="${q.image}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="fallback">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>
@@ -819,8 +823,7 @@
     } else if (q.optionsType === 'image'){
       html += '<div class="q-options image-grid">';
       q.options.forEach((opt, i) => {
-        const letter = letters[i].toLowerCase();
-        const imgUrl = `/thechemclassroom/images/q${current + 1}-${letter}.jpg`;
+        const imgUrl = `/thechemclassroom/images/${(q.optionImages && q.optionImages[i]) || 'xx.jpg'}`;
         html += `<button class="opt-btn" data-index="${i}">
           <span class="opt-letter">${letters[i]}</span>
           <div class="opt-image-slot">
