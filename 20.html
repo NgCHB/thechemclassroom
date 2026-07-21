@@ -431,7 +431,23 @@
   .quiz-feedback.right .fb-title{ color: var(--teal-deep); }
   .quiz-feedback.wrong .fb-title{ color: var(--danger); }
 
-  .quiz-actions{ margin-top: 1.4rem; display:flex; justify-content:flex-end; }
+  .quiz-actions{ margin-top: 1.4rem; display:flex; justify-content:space-between; align-items:center; }
+
+  .quiz-btn-ghost{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    background: none;
+    color: var(--ink-soft);
+    transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  }
+
+  .quiz-btn-ghost:hover:not(:disabled){ border-color: var(--teal); color: var(--teal); }
+  .quiz-btn-ghost:disabled{ opacity: 0.35; cursor: default; }
 
   .quiz-btn{
     font-family: 'Space Grotesk', sans-serif;
@@ -769,9 +785,7 @@
 
   /* ---------- Quiz state ---------- */
   let current = 0;
-  let score = 0;
-  let answered = false;
-  const missedConcepts = new Set();
+  const userAnswers = new Array(quizData.length).fill(null); // stores selected index per question, or null if unanswered
   const letters = ['A','B','C','D'];
 
   const mount = document.getElementById('quiz-card-mount');
@@ -780,7 +794,6 @@
 
   function renderQuestion(){
     const q = quizData[current];
-    answered = false;
     progressLabel.textContent = `Question ${current + 1} of ${quizData.length}`;
     progressFill.style.width = `${(current / quizData.length) * 100}%`;
 
@@ -842,44 +855,62 @@
     }
 
     html += `<div class="quiz-feedback" id="quiz-feedback"></div>
-      <div class="quiz-actions"><button class="quiz-btn" id="quiz-action" disabled>Check answer</button></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn-ghost" id="quiz-prev">&larr; Previous</button>
+        <button class="quiz-btn" id="quiz-action" disabled>Check answer</button>
+      </div>
     </div>`;
 
     mount.innerHTML = html;
     bindQuestionEvents(q);
+
+    const prevBtn = document.getElementById('quiz-prev');
+    prevBtn.disabled = current === 0;
+    prevBtn.addEventListener('click', () => {
+      if (current > 0){ current--; renderQuestion(); }
+    });
+  }
+
+  function showFeedbackAndLock(q, selectedIndex, optBtns){
+    const isCorrect = selectedIndex === q.correct;
+    optBtns.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add('correct');
+      if (i === selectedIndex && !isCorrect) b.classList.add('incorrect');
+      if (i === selectedIndex) b.classList.add('selected');
+    });
+    const fb = document.getElementById('quiz-feedback');
+    fb.classList.add('show', isCorrect ? 'right' : 'wrong');
+    fb.innerHTML = `<div class="fb-title">${isCorrect ? 'Correct' : 'Not quite'}</div><div>${q.explanation}</div>`;
   }
 
   function bindQuestionEvents(q){
     const optBtns = mount.querySelectorAll('.opt-btn');
     const actionBtn = document.getElementById('quiz-action');
-    let selected = null;
+    const alreadyAnswered = userAnswers[current] !== null;
+    let selected = alreadyAnswered ? userAnswers[current] : null;
 
-    optBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (answered) return;
-        optBtns.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selected = parseInt(btn.dataset.index, 10);
-        actionBtn.disabled = false;
+    if (alreadyAnswered){
+      // Review mode: show the locked-in answer and explanation immediately, read-only.
+      showFeedbackAndLock(q, selected, optBtns);
+      actionBtn.disabled = false;
+      actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
+    } else {
+      optBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          optBtns.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selected = parseInt(btn.dataset.index, 10);
+          actionBtn.disabled = false;
+        });
       });
-    });
+    }
 
     actionBtn.addEventListener('click', () => {
-      if (!answered){
-        answered = true;
-        const isCorrect = selected === q.correct;
-        if (isCorrect) score++; else missedConcepts.add(q.concept);
-
-        optBtns.forEach((b, i) => {
-          b.disabled = true;
-          if (i === q.correct) b.classList.add('correct');
-          if (i === selected && !isCorrect) b.classList.add('incorrect');
-        });
-
-        const fb = document.getElementById('quiz-feedback');
-        fb.classList.add('show', isCorrect ? 'right' : 'wrong');
-        fb.innerHTML = `<div class="fb-title">${isCorrect ? 'Correct' : 'Not quite'}</div><div>${q.explanation}</div>`;
-
+      const isLocked = userAnswers[current] !== null;
+      if (!isLocked){
+        userAnswers[current] = selected;
+        showFeedbackAndLock(q, selected, optBtns);
         actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
       } else {
         current++;
@@ -893,6 +924,13 @@
   }
 
   function showResults(){
+    let score = 0;
+    const missedConcepts = new Set();
+    quizData.forEach((q, i) => {
+      if (userAnswers[i] === q.correct) score++;
+      else if (userAnswers[i] !== null) missedConcepts.add(q.concept);
+    });
+
     document.getElementById('quiz-play').style.display = 'none';
     const resultsEl = document.getElementById('quiz-results');
     resultsEl.classList.add('active');
@@ -904,7 +942,8 @@
     if (missedConcepts.size === 0){
       reviseBox.innerHTML = '<div class="revise-title">Nice work — no gaps to revise.</div>';
     } else {
-      reviseItems.innerHTML = Array.from(missedConcepts).map(c => `<li>${c}</li>`).join('');
+      reviseBox.innerHTML = '<div class="revise-title">Concepts to revise</div><ul id="revise-items"></ul>';
+      document.getElementById('revise-items').innerHTML = Array.from(missedConcepts).map(c => `<li>${c}</li>`).join('');
     }
   }
 
@@ -915,11 +954,14 @@
   });
 
   document.getElementById('quiz-restart').addEventListener('click', () => {
-    current = 0; score = 0; answered = false; missedConcepts.clear();
+    current = 0;
+    userAnswers.fill(null);
     document.getElementById('quiz-results').classList.remove('active');
+    document.getElementById('quiz-play').style.display = 'none';
     document.getElementById('quiz-intro').classList.add('active');
   });
 </script>
+
 
 </body>
 </html>
