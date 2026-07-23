@@ -199,6 +199,48 @@
     background: var(--teal);
   }
 
+  .opt-inline-image{
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+    background: #FCFCFA;
+  }
+
+  .opt-inline-image img{ width:100%; height:100%; object-fit:contain; display:block; }
+
+  .opt-inline-image .fallback{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+
+  .opt-inline-image .fallback svg{ width:16px; height:16px; opacity:0.35; }
+
+  .ref-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.9rem 0 1.1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+  }
+
+  .ref-table th, .ref-table td{
+    border: 1px solid var(--line);
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+  }
+
+  .ref-table th{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
   /* ---------- Quiz ---------- */
 
   .quiz-progress{
@@ -523,6 +565,7 @@
   .revise-list li{ margin-bottom: 0.3rem; }
 
   #quiz-play{ display:none; }
+  #quiz-play-2{ display:none; }
 
   footer{
     text-align:center;
@@ -548,6 +591,7 @@
   <button class="tab-btn" data-panel="l4" role="tab" aria-selected="false">L4</button>
   <button class="tab-btn" data-panel="t" role="tab" aria-selected="false">T</button>
   <button class="tab-btn" data-panel="practice" role="tab" aria-selected="false">P</button>
+  <button class="tab-btn" data-panel="p2" role="tab" aria-selected="false">P2</button>
 </nav>
 
 <main>
@@ -626,6 +670,34 @@
         <ul id="revise-items"></ul>
       </div>
       <button class="quiz-btn" id="quiz-restart">Restart quiz</button>
+    </div>
+
+  </section>
+
+  <section class="panel" id="p2" role="tabpanel">
+
+    <div class="quiz-state active" id="quiz-intro-2">
+      <div class="kicker">Practice quiz</div>
+      <h2>Carboxylic Acids &amp; Esters — 38 questions</h2>
+      <p>Multiple choice. You'll see the correct answer and explanation after each question.</p>
+      <button class="quiz-btn" id="quiz-start-2">Start quiz</button>
+    </div>
+
+    <div id="quiz-play-2">
+      <div class="quiz-progress" id="quiz-progress-label-2">Question 1 of 38</div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill-2"></div></div>
+      <div id="quiz-card-mount-2"></div>
+    </div>
+
+    <div class="quiz-state" id="quiz-results-2">
+      <div class="kicker">Quiz complete</div>
+      <div class="score-big" id="score-big-2">0 / 38</div>
+      <div class="score-pct" id="score-pct-2">0%</div>
+      <div class="revise-list" id="revise-list-2">
+        <div class="revise-title">Concepts to revise</div>
+        <ul id="revise-items-2"></ul>
+      </div>
+      <button class="quiz-btn" id="quiz-restart-2">Restart quiz</button>
     </div>
 
   </section>
@@ -857,7 +929,7 @@
     html += `<div class="quiz-feedback" id="quiz-feedback"></div>
       <div class="quiz-actions">
         <button class="quiz-btn-ghost" id="quiz-prev">&larr; Previous</button>
-        <button class="quiz-btn" id="quiz-action" disabled>Check answer</button>
+        <button class="quiz-btn" id="quiz-action" style="visibility:hidden;">Next question</button>
       </div>
     </div>`;
 
@@ -888,37 +960,30 @@
     const optBtns = mount.querySelectorAll('.opt-btn');
     const actionBtn = document.getElementById('quiz-action');
     const alreadyAnswered = userAnswers[current] !== null;
-    let selected = alreadyAnswered ? userAnswers[current] : null;
+
+    actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
 
     if (alreadyAnswered){
       // Review mode: show the locked-in answer and explanation immediately, read-only.
-      showFeedbackAndLock(q, selected, optBtns);
-      actionBtn.disabled = false;
-      actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
+      showFeedbackAndLock(q, userAnswers[current], optBtns);
+      actionBtn.style.visibility = 'visible';
     } else {
       optBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          optBtns.forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          selected = parseInt(btn.dataset.index, 10);
-          actionBtn.disabled = false;
+          const selected = parseInt(btn.dataset.index, 10);
+          userAnswers[current] = selected;
+          showFeedbackAndLock(q, selected, optBtns);
+          actionBtn.style.visibility = 'visible';
         });
       });
     }
 
     actionBtn.addEventListener('click', () => {
-      const isLocked = userAnswers[current] !== null;
-      if (!isLocked){
-        userAnswers[current] = selected;
-        showFeedbackAndLock(q, selected, optBtns);
-        actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
+      current++;
+      if (current < quizData.length){
+        renderQuestion();
       } else {
-        current++;
-        if (current < quizData.length){
-          renderQuestion();
-        } else {
-          showResults();
-        }
+        showResults();
       }
     });
   }
@@ -959,6 +1024,528 @@
     document.getElementById('quiz-results').classList.remove('active');
     document.getElementById('quiz-play').style.display = 'none';
     document.getElementById('quiz-intro').classList.add('active');
+  });
+
+  /* =========================================================
+     QUIZ 2 — Carboxylic Acids & Esters (P2 tab)
+     ========================================================= */
+
+  const quizData2 = [
+    {
+      stem: "Ethanol, C₂H₆O, was reacted with propanoic acid, C₃H₆O₂, in the presence of concentrated sulfuric acid. Which statement about the organic product of this reaction is correct?",
+      options: ["It has the formula C₅H₁₀O₂.", "It has the formula C₅H₁₂O₃.", "It is formed by an addition reaction.", "It is propyl ethanoate."],
+      correct: 0,
+      explanation: "Esterification of ethanol (C₂H₆O) with propanoic acid (C₃H₆O₂) forms an ester plus water, releasing H₂O from the combined atoms: C₂H₆O + C₃H₆O₂ → ester + H₂O. Adding the two formulae gives C₅H₁₂O₃; subtracting H₂O gives C₅H₁₀O₂, the ester's formula. The product is ethyl propanoate (ethyl from the alcohol, propanoate from the acid), not propyl ethanoate, and esterification is a condensation reaction, not addition.",
+      concept: "Esterification"
+    },
+    {
+      stem: "Which statement about ethanoic acid is correct?",
+      options: [
+        "Ethanoic acid can be made by the catalysed addition of steam to ethene.",
+        "Propanoic acid can react with ethanoic acid to produce an ester.",
+        "Solutions of 1.0mol/dm³ ethanoic acid and 1.0mol/dm³ hydrochloric acid will react with magnesium at equal rates.",
+        "The formula of ethanoic acid is CH₃CO₂H."
+      ],
+      correct: 3,
+      explanation: "Ethanoic acid's formula is CH₃CO₂H. It isn't made from ethene — that reaction (hydration) produces the alcohol, ethanol, not the acid. Two carboxylic acids don't react together to form an ester (esters need an acid plus an alcohol). Because ethanoic acid is a weak acid (only partially ionised) while hydrochloric acid is a strong acid (fully ionised), equal-concentration solutions have different H⁺ concentrations, so they won't react with magnesium at equal rates — HCl reacts faster.",
+      concept: "Properties of carboxylic acids"
+    },
+    {
+      stem: "Two esters have the same molecular formula, C₃H₆O₂. What are the names of these two esters?",
+      list: ["methyl ethanoate", "ethyl propanoate", "ethyl methanoate", "propyl methanoate"],
+      options: ["1 and 2", "1 and 3", "2 and 4", "3 and 4"],
+      correct: 1,
+      explanation: "Methyl ethanoate is CH₃CO₂CH₃ = C₃H₆O₂, and ethyl methanoate is HCO₂C₂H₅ = C₃H₆O₂ — both match. Ethyl propanoate (C₅H₁₀O₂) and propyl methanoate (C₄H₈O₂) both have more carbons and don't match the given formula.",
+      concept: "Naming and formulae of esters"
+    },
+    {
+      stem: "Which statement is correct?",
+      options: [
+        "Carboxylic acids contain the functional group shown.",
+        "Ethanoic acid will react and fizz when copper is added.",
+        "Ethanol will decolourise acidified potassium manganate(VII).",
+        "The structure of ethyl ethanoate is as shown."
+      ],
+      optionImages: ["xx.jpg", null, null, "xx.jpg"],
+      correct: 2,
+      explanation: "The diagram in A actually shows an aldehyde group (–CHO), not the carboxylic acid group (–CO₂H), so A describes the wrong functional group. Copper is unreactive with weak acids like ethanoic acid — there's no reaction or fizzing, so B is wrong. Acidified potassium manganate(VII) is a strong oxidising agent and will oxidise ethanol, its purple colour fading to colourless as it does — so C is correct. The diagram in D is missing the CH₃ group on the carbonyl carbon that ethyl ethanoate needs, so it isn't actually ethyl ethanoate.",
+      concept: "Functional groups of alcohols and carboxylic acids"
+    },
+    {
+      stem: "Which of the following has not been prepared by reacting a carboxylic acid with an alcohol?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 2,
+      explanation: "A is a polyester (repeating ester linkages, like Terylene), made by condensation polymerisation of a diacid and a diol. B and D are simple esters, each containing the characteristic –C(=O)–O– ester linkage formed from a carboxylic acid and an alcohol. C, however, is an aldehyde — it has no ester linkage at all, so it could not have been made by reacting a carboxylic acid with an alcohol.",
+      concept: "Recognising ester structures"
+    },
+    {
+      stem: "The diagram shows the structure of an organic acid. Which row is correct?",
+      image: "Structure of the organic acid",
+      imageFile: "xx.jpg",
+      optionsType: "table",
+      tableHead: ["Name of acid", "Reacts with aqueous sodium carbonate to produce carbon dioxide"],
+      options: [["butanoic acid", "no"], ["butanoic acid", "yes"], ["propanoic acid", "no"], ["propanoic acid", "yes"]],
+      correct: 3,
+      explanation: "The diagram shows a three-carbon chain ending in a –CO₂H group — propanoic acid (CH₃CH₂CO₂H), not butanoic acid (which would have four carbons). All carboxylic acids, including propanoic acid, are acidic and react with aqueous sodium carbonate to release carbon dioxide, so propanoic acid does react with sodium carbonate to produce CO₂ — option D.",
+      concept: "Naming carboxylic acids & their acidic reactions"
+    },
+    {
+      stem: "A compound has the following structure. Which reactions will occur with this compound?",
+      image: "Structure of an unsaturated carboxylic acid",
+      imageFile: "xx.jpg",
+      list: ["Bromine water will decolourise.", "It will react with an alcohol to form an ester.", "It will react with sodium metal."],
+      options: ["1 only", "1 and 2 only", "1, 2 and 3", "2 and 3 only"],
+      correct: 2,
+      explanation: "The compound is an unsaturated carboxylic acid — it has both a C=C double bond and a –CO₂H group. The C=C bond reacts with bromine water, decolourising it (reaction 1). The –CO₂H group can react with an alcohol to form an ester (reaction 2, esterification). The acidic O–H of the –CO₂H group also reacts with reactive metals such as sodium, releasing hydrogen gas (reaction 3). All three reactions occur, so the answer is C.",
+      concept: "Reactions of unsaturated carboxylic acids"
+    },
+    {
+      stem: "When ethanol reacts with ethanoic acid, the ester ethyl ethanoate is formed: C₂H₅OH + CH₃CO₂H → CH₃CO₂C₂H₅ + H₂O. What is the formula of the ester formed when methanol reacts with butanoic acid, C₃H₇CO₂H?",
+      options: ["C₂H₅CO₂C₂H₅", "C₃H₇CO₂C₂H₅", "CH₃CO₂C₃H₇", "C₃H₇CO₂CH₃"],
+      correct: 3,
+      explanation: "Esterification keeps the acid's alkyl-carbonyl part (from butanoic acid, C₃H₇CO₂–) attached via oxygen to the alcohol's alkyl group (from methanol, –CH₃). This gives C₃H₇CO₂CH₃ — option D. The other options either swap which reactant contributes which alkyl group or use the wrong alkyl group length.",
+      concept: "Esterification"
+    },
+    {
+      stem: "The diagram shows the structure of an ester: CH₃CH₂CH₂–C(=O)–O–CH₂CH₂CH₃. What are the starting materials for making this compound?",
+      options: ["butanol and butanoic acid", "butanol and propanoic acid", "propanol and butanoic acid", "propanol and propanoic acid"],
+      correct: 2,
+      explanation: "The acid-derived part of the ester (attached to the C=O) is CH₃CH₂CH₂–CO–, which comes from butanoic acid (4 carbons: CH₃CH₂CH₂CO₂H). The alcohol-derived part (attached to the ester's single-bonded O) is –CH₂CH₂CH₃, from propanol (3 carbons: CH₃CH₂CH₂OH). So the starting materials are butanoic acid and propanol — option C.",
+      concept: "Identifying ester starting materials from structure"
+    },
+    {
+      stem: "The solubility of the carboxylic acids in water decreases as the size of the carboxylic acid molecules increases. Which carboxylic acid is the least soluble in water?",
+      options: ["butanoic acid", "ethanoic acid", "methanoic acid", "propanoic acid"],
+      correct: 0,
+      explanation: "Solubility of carboxylic acids in water decreases as chain length (and molecular size) increases, because the non-polar hydrocarbon part becomes larger relative to the polar –CO₂H group. Of the acids listed, butanoic acid has the longest carbon chain, so it is the least soluble.",
+      concept: "Trends in a homologous series"
+    },
+    {
+      stem: "In the manufacture of ethanoic acid, the chemical industry uses the following sequence of reactions. What are the three processes?",
+      scheme: ["compound X", "1", "ethene", "2", "ethanol"],
+      list: ["Reaction 3 then converts ethanol into ethanoic acid."],
+      optionsType: "table",
+      tableHead: ["1", "2 → 3"],
+      options: [["cracking", "hydration → oxidation"], ["cracking", "polymerisation → hydration"], ["hydration", "polymerisation → oxidation"], ["polymerisation", "oxidation → hydration"]],
+      correct: 0,
+      explanation: "Ethene is obtained from longer hydrocarbons by cracking (process 1). Ethene is then converted to ethanol by the catalytic addition of steam — hydration (process 2). Finally, ethanol is oxidised to ethanoic acid using an oxidising agent (process 3). This matches cracking, then hydration, then oxidation — option A.",
+      concept: "Industrial manufacture of ethanoic acid"
+    },
+    {
+      stem: "Shown below are some properties of compound X: it reacts with potassium carbonate to produce carbon dioxide; it reacts with ethanol to produce a sweet-smelling liquid; it reacts with sodium hydroxide to produce a salt. What is X?",
+      options: ["ethanol", "ethanoic acid", "ethyl ethanoate", "ethyl methanoate"],
+      correct: 1,
+      explanation: "Reacting with potassium carbonate to release CO₂, forming an ester with ethanol, and forming a salt with sodium hydroxide are all properties of a carboxylic acid. Since ethanol is the alcohol reacting with X to form the ester, X is ethanoic acid — option B.",
+      concept: "Identifying carboxylic acids from their reactions"
+    },
+    {
+      stem: "Esters are formed when an alcohol reacts with a carboxylic acid. Which ester would be formed using the carboxylic acid and alcohol shown?",
+      image: "Structures of the carboxylic acid and alcohol",
+      imageFile: "xx.jpg",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 0,
+      explanation: "To find the ester, join the acid's carbon chain (with its branching kept intact) to the alcohol's carbon chain through the –C(=O)–O– linkage, removing one water molecule. Match each option's branching pattern and chain lengths on the acid-side and alcohol-side against the given carboxylic acid and alcohol structures. This is a diagram-heavy question — please check the option images carefully against the original once uploaded, as the exact branching is easiest to confirm visually.",
+      concept: "Predicting ester structure from acid and alcohol"
+    },
+    {
+      stem: "For which molecules are the empirical and molecular formulae the same? 1. methanoic acid, HCO₂H  2. ethanoic acid, CH₃CO₂H  3. propanoic acid, C₂H₅CO₂H  4. butanoic acid, C₃H₇CO₂H",
+      options: ["1, 2 and 3 only", "1 and 3 only", "2 and 3 only", "2, 3 and 4 only"],
+      correct: 1,
+      explanation: "Methanoic acid (CH₂O₂) has no common factor greater than 1, so it's already in simplest form — empirical = molecular. Ethanoic acid (C₂H₄O₂) simplifies to CH₂O (dividing by 2), so it differs. Propanoic acid (C₃H₆O₂) has no common factor greater than 1, so empirical = molecular here too. Butanoic acid (C₄H₈O₂) simplifies to C₂H₄O (dividing by 2), so it also differs. Only methanoic acid and propanoic acid (1 and 3) match.",
+      concept: "Empirical vs molecular formulae"
+    },
+    {
+      stem: "A compound Y is thought to be an organic acid. Which reaction shows that Y is an organic acid?",
+      options: ["It reacts with an alcohol to form an ester.", "It reacts with magnesium to form hydrogen.", "It reacts with sodium carbonate to form carbon dioxide.", "It turns litmus red."],
+      correct: 0,
+      explanation: "Reacting with magnesium, sodium carbonate, or turning litmus red are general properties shared by all acids, including inorganic ones like hydrochloric acid — they don't specifically show that Y is organic. Forming an ester when reacted with an alcohol, however, is a distinguishing reaction of carboxylic (organic) acids specifically, since typical inorganic acids don't undergo this reaction.",
+      concept: "Distinguishing organic acids from acids generally"
+    },
+    {
+      stem: "Which compound will react with ethanol to form an ester?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 2,
+      explanation: "To form an ester with ethanol, a compound needs a carboxylic acid (–CO₂H) group. Structure C is methanoic acid, HCO₂H — the simplest carboxylic acid — which reacts with ethanol (esterification) to form ethyl methanoate. The other structures are already esters, aldehydes, or other functional groups that won't react with ethanol to directly form a new ester.",
+      concept: "Recognising carboxylic acids for esterification"
+    },
+    {
+      stem: "What is the name of the ester CH₃COOC₂H₅?",
+      options: ["ethyl ethanoate", "ethyl methanoate", "methyl ethanoate", "methyl methanoate"],
+      correct: 0,
+      explanation: "The acid-derived part (CH₃CO–) is 'ethanoate' (from ethanoic acid), and the alcohol-derived part (–OC₂H₅) is 'ethyl' (from ethanol). Together: ethyl ethanoate.",
+      concept: "Naming esters"
+    },
+    {
+      stem: "Which statement about ethanoic acid is correct?",
+      options: ["It contains three carbon atoms per molecule.", "It contains five hydrogen atoms per molecule.", "It is insoluble in water.", "It reacts with ethanol to form a sweet-smelling compound."],
+      correct: 3,
+      explanation: "Ethanoic acid, CH₃CO₂H, has 2 carbon atoms and 4 hydrogen atoms (3 in the methyl group, 1 in the –OH), and it's highly soluble in water. It does react with ethanol, though, in an esterification reaction to form ethyl ethanoate — a sweet-smelling ester. So D is correct.",
+      concept: "Properties of ethanoic acid"
+    },
+    {
+      stem: "The diagram shows a reaction scheme: ethene + steam (catalyst) → compound X --(acidified potassium dichromate(VI))--> compound Y --(+ compound X)--> compound Z. What is the final compound, Z?",
+      options: ["a carboxylic acid", "an alcohol", "an alkene", "an ester"],
+      correct: 3,
+      explanation: "Ethene + steam with a catalyst gives ethanol (compound X) via hydration. Oxidising ethanol with acidified potassium dichromate(VI) gives ethanoic acid (compound Y). Finally, reacting compound Y (ethanoic acid) with compound X (ethanol) again is esterification, producing compound Z, an ester.",
+      concept: "Reaction pathways between alcohols, acids and esters"
+    },
+    {
+      stem: "How does the number of carbon, hydrogen and oxygen atoms in an ester differ from the total number of carbon, hydrogen and oxygen atoms in the alcohol and carboxylic acid from which the compound was derived?",
+      optionsType: "table",
+      tableHead: ["Carbon atoms", "Hydrogen / Oxygen atoms"],
+      options: [["less", "less / less"], ["less", "same / less"], ["same", "less / less"], ["same", "same / same"]],
+      correct: 2,
+      explanation: "Esterification is a condensation reaction that releases one molecule of water (H₂O) — losing 2 hydrogen atoms and 1 oxygen atom, but no carbon atoms. So compared to the combined alcohol + carboxylic acid, the ester has the same number of carbon atoms, but fewer hydrogen atoms and fewer oxygen atoms — option C.",
+      concept: "Atom economy of esterification"
+    },
+    {
+      stem: "An aqueous solution of a compound of formula C₂H₄O₂ reacts with sodium carbonate, liberating carbon dioxide. What is the structural formula of the compound?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 2,
+      explanation: "A compound that releases CO₂ from sodium carbonate must be an acid — at this level, specifically a carboxylic acid. With molecular formula C₂H₄O₂, the correct structure is CH₃CO₂H (ethanoic acid) — option C. The other structures represent an alkene-diol, a cyclic structure, and an ester respectively, none of which are acidic enough to react with sodium carbonate this way.",
+      concept: "Identifying carboxylic acids from formula/structure"
+    },
+    {
+      stem: "The diagrams show two organic compounds, S and T. Which statement about the compounds S and T is correct?",
+      image: "Structures of compounds S and T",
+      imageFile: "xx.jpg",
+      options: [
+        "Both S and T react with sodium carbonate.",
+        "S and T react together to form the ester ethyl propanoate.",
+        "T can be changed into S using acidified potassium dichromate(VI).",
+        "They are in the same homologous series."
+      ],
+      correct: 2,
+      explanation: "S is propanoic acid (CH₃CH₂CO₂H) and T is propan-1-ol (CH₃CH₂CH₂OH). Only S, the acid, reacts with sodium carbonate, so A is wrong. Reacting S with T would form propyl propanoate, not ethyl propanoate, so B is wrong. T is a primary alcohol, and oxidising it with acidified potassium dichromate(VI) converts it into the corresponding carboxylic acid, propanoic acid (S) — so C is correct. S and T belong to different homologous series (a carboxylic acid and an alcohol), so D is wrong.",
+      concept: "Oxidation of alcohols to carboxylic acids"
+    },
+    {
+      stem: "In which reaction is water produced?",
+      options: ["manufacture of ethanol from ethene", "manufacture of margarine from vegetable oils", "manufacture of poly(ethene) from ethene", "manufacture of Terylene from a carboxylic acid and an alcohol"],
+      correct: 3,
+      explanation: "Making ethanol from ethene is a hydration reaction — water (steam) is a reactant, not a product. Making margarine from vegetable oils is hydrogenation (addition of H₂), and making poly(ethene) is addition polymerisation — neither produces water. Making Terylene from a diacid and a diol, however, is condensation polymerisation (repeated esterification), which releases water as each ester linkage forms.",
+      concept: "Condensation vs addition reactions"
+    },
+    {
+      stem: "The results of tests on compound Z are shown. What is compound Z?",
+      refTable: {headers: ["Test", "Result"], rows: [["add bromine water", "turns colourless"], ["add aqueous sodium carbonate", "carbon dioxide formed"]]},
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 3,
+      explanation: "Compound Z decolourises bromine water, showing it has a C=C double bond, and reacts with sodium carbonate to release CO₂, showing it has a –CO₂H group. Only one structure has both an unsaturated C=C bond and a carboxylic acid group — an unsaturated carboxylic acid, matching both test results. The other structures are missing one feature or the other (a saturated acid, a saturated alcohol, or an unsaturated alcohol without the acid group).",
+      concept: "Combining tests to identify unsaturation and acidity"
+    },
+    {
+      stem: "Cholesterol is an organic molecule that occurs in the blood stream. What type of compound is cholesterol?",
+      options: ["an acid", "an alcohol", "an alkane", "an alkene"],
+      correct: 1,
+      explanation: "Cholesterol contains a hydroxyl (–OH) group as its main functional group, which classifies it as an alcohol (specifically a sterol, a type of complex alcohol).",
+      concept: "Functional group classification"
+    },
+    {
+      stem: "The structural formula of butenedioic acid is shown. Which statement about butenedioic acid is not correct?",
+      image: "Structure of butenedioic acid",
+      imageFile: "xx.jpg",
+      options: ["It decolourises aqueous bromine.", "Its aqueous solution reacts with sodium carbonate.", "Its empirical formula is the same as its molecular formula.", "Its relative molecular mass is 116."],
+      correct: 2,
+      explanation: "Butenedioic acid, HO₂C–CH=CH–CO₂H, has molecular formula C₄H₄O₄. Since all the subscripts (4, 4, 4) share a common factor of 4, the empirical formula simplifies to CHO — different from the molecular formula. So statement C, claiming they're the same, is NOT correct. The other statements are true: it has a C=C bond so decolourises bromine water, it's a diacid so reacts with sodium carbonate, and its Mr is 4(12) + 4(1) + 4(16) = 116.",
+      concept: "Empirical vs molecular formulae; unsaturated diacids"
+    },
+    {
+      stem: "Carboxylic acids react with alcohols to form esters. Which acid and alcohol react together to form the ester CH₃CH₂–C(=O)–OCH₃?",
+      options: ["propanoic acid and ethanol", "propanoic acid and methanol", "ethanoic acid and ethanol", "ethanoic acid and methanol"],
+      correct: 1,
+      explanation: "The acid-derived part of the ester (CH₃CH₂–CO–) is propanoate, from propanoic acid. The alcohol-derived part (–OCH₃) is methyl, from methanol. So the starting materials are propanoic acid and methanol — option B.",
+      concept: "Identifying ester starting materials"
+    },
+    {
+      stem: "Which compound has more than two carbon atoms per molecule?",
+      options: ["ethyl ethanoate", "ethene", "ethane", "ethanoic acid"],
+      correct: 0,
+      explanation: "Ethyl ethanoate, CH₃CO₂C₂H₅, contains 4 carbon atoms in total (2 from the ethanoate part, 2 from the ethyl part) — more than 2. Ethene, ethane, and ethanoic acid each contain exactly 2 carbon atoms.",
+      concept: "Counting atoms in organic formulae"
+    },
+    {
+      stem: "Which of the following has not been prepared by reacting a carboxylic acid with an alcohol?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 2,
+      explanation: "A is a polyester, made by condensation of a diacid and a diol. B and D contain the ester linkage –C(=O)–O– and are simple esters made from an acid and an alcohol. C is an aldehyde with no ester linkage, so it could not have been made this way.",
+      concept: "Recognising ester structures"
+    },
+    {
+      stem: "What is the empirical formula of ethanoic acid?",
+      options: ["CH₂O", "CH₄O", "C₂H₃O", "C₂H₄O₂"],
+      correct: 0,
+      explanation: "Ethanoic acid's molecular formula is C₂H₄O₂. Dividing all the subscripts by their common factor, 2, gives the simplest ratio: CH₂O — the empirical formula.",
+      concept: "Empirical formulae"
+    },
+    {
+      stem: "A liquid reacts with each of sodium carbonate, potassium hydroxide and ethanol. What is the liquid?",
+      options: ["aqueous ammonia", "ethanoic acid", "ethyl ethanoate", "hydrochloric acid"],
+      correct: 1,
+      explanation: "A liquid that reacts with sodium carbonate (releasing CO₂), potassium hydroxide (neutralisation), and ethanol (esterification) must be a carboxylic acid. Of the options, ethanoic acid fits all three reactions. Hydrochloric acid would react with the carbonate and hydroxide but not with ethanol; ethyl ethanoate and aqueous ammonia don't fit the acid behaviour.",
+      concept: "Identifying carboxylic acids by their reactions"
+    },
+    {
+      stem: "Which formula represents a compound that will react with sodium carbonate to give off carbon dioxide?",
+      options: ["CH₃OH", "HCO₂CH₃", "CH₃CO₂H", "CH₃CO₂C₂H₅"],
+      correct: 2,
+      explanation: "Only a compound with a free carboxylic acid group (–CO₂H) reacts with sodium carbonate to release CO₂. CH₃CO₂H (ethanoic acid) has this group. HCO₂CH₃ and CH₃CO₂C₂H₅ are esters (no free acid group), and CH₃OH is an alcohol — none of these react with sodium carbonate this way.",
+      concept: "Identifying carboxylic acids from formula"
+    },
+    {
+      stem: "An organic compound, Y, reacts with sodium hydroxide to give a compound with formula C₃H₅O₂Na. What is compound Y?",
+      options: ["ethanol", "propane", "propanoic acid", "propanol"],
+      correct: 2,
+      explanation: "Sodium hydroxide converts a carboxylic acid into its sodium salt: R–CO₂H + NaOH → R–CO₂Na + H₂O. Given the salt formula C₃H₅O₂Na, the parent acid is C₂H₅CO₂H — propanoic acid (C₃H₆O₂) — since removing the acidic H and adding Na gives exactly C₃H₅O₂Na.",
+      concept: "Reactions of carboxylic acids with alkalis; salt formulae"
+    },
+    {
+      stem: "Compound X has the molecular formula C₂H₆O.",
+      list: ["X can be made by a fermentation process.", "X can be oxidised to Y.", "X can react with Y to form Z and water."],
+      stemSuffix: "To which homologous series do X, Y and Z belong?",
+      optionsType: "table",
+      tableHead: ["X", "Y", "Z"],
+      options: [["alcohols", "carboxylic acids", "esters"], ["alcohols", "esters", "carboxylic acids"], ["carboxylic acids", "alcohols", "esters"], ["carboxylic acids", "esters", "alcohols"]],
+      correct: 0,
+      explanation: "X (C₂H₆O, made by fermentation) is ethanol, an alcohol. Oxidising ethanol gives Y, ethanoic acid, a carboxylic acid. Reacting X (ethanol) with Y (ethanoic acid) in an esterification reaction gives Z, an ester, plus water. So X, Y, Z belong to alcohols, carboxylic acids, esters respectively.",
+      concept: "Relationships between alcohols, carboxylic acids and esters"
+    },
+    {
+      stem: "What is produced when ethanol is boiled with an excess of acidified potassium dichromate(VI)?",
+      options: ["ethane", "ethanoic acid", "ethene", "ethyl ethanoate"],
+      correct: 1,
+      explanation: "Boiling ethanol with an excess of acidified potassium dichromate(VI) ensures full oxidation of the primary alcohol all the way to the carboxylic acid, ethanoic acid.",
+      concept: "Oxidation of ethanol under different conditions"
+    },
+    {
+      stem: "Which structure shows a compound that reacts with ethanol to give a sweet-smelling liquid?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 1,
+      explanation: "A sweet-smelling liquid forms when a carboxylic acid reacts with ethanol (esterification). The correct structure is butanoic acid (it contains the –CO₂H group), so it reacts with ethanol to produce the ester ethyl butanoate — a sweet-smelling liquid. The other structures show an alkene, an aldehyde/ester, and an alcohol, none of which are the acid needed here.",
+      concept: "Recognising carboxylic acids for esterification"
+    },
+    {
+      stem: "The table shows the properties of four compounds. Which compound could be ethanoic acid?",
+      optionsType: "table",
+      tableHead: ["Degree of ionisation in water", "Addition to magnesium"],
+      options: [["high", "hydrogen produced"], ["high", "no reaction"], ["low", "hydrogen produced"], ["low", "no reaction"]],
+      correct: 2,
+      explanation: "Ethanoic acid is a weak acid, meaning it only partially ionises in water — a low degree of ionisation. However, it's still acidic enough to react with reactive metals like magnesium, producing hydrogen gas. The compound matching 'low ionisation' and 'hydrogen produced' is option C.",
+      concept: "Weak acids: partial ionisation, still acidic"
+    },
+    {
+      stem: "What is the general formula of the homologous series of carboxylic acids?",
+      refTable: {headers: ["Name", "Formula"], rows: [["methanoic acid", "HCO₂H"], ["ethanoic acid", "CH₃CO₂H"], ["propanoic acid", "C₂H₅CO₂H"], ["butanoic acid", "C₃H₇CO₂H"]]},
+      options: ["CHO", "CₙH₂ₙO", "CₙHₙOₙ", "CₙH₂ₙO₂"],
+      correct: 3,
+      explanation: "Checking each acid against CₙH₂ₙO₂: methanoic acid (n=1) gives CH₂O₂ ✓; ethanoic acid (n=2) gives C₂H₄O₂ ✓; propanoic acid (n=3) gives C₃H₆O₂ ✓; butanoic acid (n=4) gives C₄H₈O₂ ✓. All match, so the general formula for carboxylic acids is CₙH₂ₙO₂.",
+      concept: "General formula of a homologous series"
+    }
+  ];
+
+  /* ---------- Quiz 2 engine ---------- */
+  let current2 = 0;
+  const userAnswers2 = new Array(quizData2.length).fill(null);
+
+  const mount2 = document.getElementById('quiz-card-mount-2');
+  const progressLabel2 = document.getElementById('quiz-progress-label-2');
+  const progressFill2 = document.getElementById('quiz-progress-fill-2');
+
+  function renderQuestion2(){
+    const q = quizData2[current2];
+    progressLabel2.textContent = `Question ${current2 + 1} of ${quizData2.length}`;
+    progressFill2.style.width = `${(current2 / quizData2.length) * 100}%`;
+
+    let html = `<div class="quiz-card active"><div class="q-stem"><p>${q.stem}</p>`;
+
+    if (q.list){
+      html += '<ol>' + q.list.map(item => `<li>${item}</li>`).join('') + '</ol>';
+    }
+
+    if (q.stemSuffix){
+      html += `<p>${q.stemSuffix}</p>`;
+    }
+
+    if (q.scheme){
+      html += '<div class="q-scheme">';
+      q.scheme.forEach((part, i) => {
+        if (i % 2 === 0){
+          html += `<div class="box">${part}</div>`;
+        } else {
+          html += `<div class="arrow">${part}<br>&rarr;</div>`;
+        }
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+
+    if (q.image){
+      const imgUrl = `/thechemclassroom/images/${q.imageFile || 'xx.jpg'}`;
+      html += `<div class="q-image-placeholder">
+        <img src="${imgUrl}" alt="${q.image}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="fallback">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>
+      </div>`;
+    }
+
+    if (q.refTable){
+      html += `<table class="ref-table"><thead><tr>${q.refTable.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>`;
+      q.refTable.rows.forEach(row => {
+        html += `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
+      });
+      html += '</tbody></table>';
+    }
+
+    if (q.optionsType === 'table'){
+      html += `<div class="opt-table-head"><span>${q.tableHead[0]}</span><span>${q.tableHead[1]}</span></div>`;
+      html += '<div class="q-options">';
+      q.options.forEach((row, i) => {
+        html += `<button class="opt-btn opt-table-row" data-index="${i}">
+          <div style="display:flex; align-items:center; gap:0.75rem;"><span class="opt-letter">${letters[i]}</span></div>
+          <div class="opt-cols"><span>${row[0]}</span><span>${row[1]}</span></div>
+        </button>`;
+      });
+      html += '</div>';
+    } else if (q.optionsType === 'image'){
+      html += '<div class="q-options image-grid">';
+      q.options.forEach((opt, i) => {
+        const imgUrl = `/thechemclassroom/images/${(q.optionImages && q.optionImages[i]) || 'xx.jpg'}`;
+        html += `<button class="opt-btn" data-index="${i}">
+          <span class="opt-letter">${letters[i]}</span>
+          <div class="opt-image-slot">
+            <img src="${imgUrl}" alt="Option ${letters[i]} structure" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="fallback">${imgIconSVG}<span class="label" style="margin-left:0.4rem;">Image placeholder</span></div>
+          </div>
+        </button>`;
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="q-options">';
+      q.options.forEach((opt, i) => {
+        const hasInlineImg = q.optionImages && q.optionImages[i];
+        let inlineImgHtml = '';
+        if (hasInlineImg){
+          const imgUrl = `/thechemclassroom/images/${q.optionImages[i]}`;
+          inlineImgHtml = `<div class="opt-inline-image">
+            <img src="${imgUrl}" alt="Option ${letters[i]} diagram" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="fallback">${imgIconSVG}</div>
+          </div>`;
+        }
+        html += `<button class="opt-btn" data-index="${i}"><span class="opt-letter">${letters[i]}</span><span>${opt}</span>${inlineImgHtml}</button>`;
+      });
+      html += '</div>';
+    }
+
+    html += `<div class="quiz-feedback" id="quiz-feedback-2"></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn-ghost" id="quiz-prev-2">&larr; Previous</button>
+        <button class="quiz-btn" id="quiz-action-2" style="visibility:hidden;">Next question</button>
+      </div>
+    </div>`;
+
+    mount2.innerHTML = html;
+    bindQuestionEvents2(q);
+
+    const prevBtn = document.getElementById('quiz-prev-2');
+    prevBtn.disabled = current2 === 0;
+    prevBtn.addEventListener('click', () => {
+      if (current2 > 0){ current2--; renderQuestion2(); }
+    });
+  }
+
+  function showFeedbackAndLock2(q, selectedIndex, optBtns){
+    const isCorrect = selectedIndex === q.correct;
+    optBtns.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add('correct');
+      if (i === selectedIndex && !isCorrect) b.classList.add('incorrect');
+      if (i === selectedIndex) b.classList.add('selected');
+    });
+    const fb = document.getElementById('quiz-feedback-2');
+    fb.classList.add('show', isCorrect ? 'right' : 'wrong');
+    fb.innerHTML = `<div class="fb-title">${isCorrect ? 'Correct' : 'Not quite'}</div><div>${q.explanation}</div>`;
+  }
+
+  function bindQuestionEvents2(q){
+    const optBtns = mount2.querySelectorAll('.opt-btn');
+    const actionBtn = document.getElementById('quiz-action-2');
+    const alreadyAnswered = userAnswers2[current2] !== null;
+
+    actionBtn.textContent = current2 === quizData2.length - 1 ? 'See results' : 'Next question';
+
+    if (alreadyAnswered){
+      showFeedbackAndLock2(q, userAnswers2[current2], optBtns);
+      actionBtn.style.visibility = 'visible';
+    } else {
+      optBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const selected = parseInt(btn.dataset.index, 10);
+          userAnswers2[current2] = selected;
+          showFeedbackAndLock2(q, selected, optBtns);
+          actionBtn.style.visibility = 'visible';
+        });
+      });
+    }
+
+    actionBtn.addEventListener('click', () => {
+      current2++;
+      if (current2 < quizData2.length){
+        renderQuestion2();
+      } else {
+        showResults2();
+      }
+    });
+  }
+
+  function showResults2(){
+    let score = 0;
+    const missedConcepts = new Set();
+    quizData2.forEach((q, i) => {
+      if (userAnswers2[i] === q.correct) score++;
+      else if (userAnswers2[i] !== null) missedConcepts.add(q.concept);
+    });
+
+    document.getElementById('quiz-play-2').style.display = 'none';
+    const resultsEl = document.getElementById('quiz-results-2');
+    resultsEl.classList.add('active');
+    document.getElementById('score-big-2').textContent = `${score} / ${quizData2.length}`;
+    document.getElementById('score-pct-2').textContent = `${Math.round((score / quizData2.length) * 100)}%`;
+
+    const reviseBox = document.getElementById('revise-list-2');
+    if (missedConcepts.size === 0){
+      reviseBox.innerHTML = '<div class="revise-title">Nice work — no gaps to revise.</div>';
+    } else {
+      reviseBox.innerHTML = '<div class="revise-title">Concepts to revise</div><ul id="revise-items-2"></ul>';
+      document.getElementById('revise-items-2').innerHTML = Array.from(missedConcepts).map(c => `<li>${c}</li>`).join('');
+    }
+  }
+
+  document.getElementById('quiz-start-2').addEventListener('click', () => {
+    document.getElementById('quiz-intro-2').classList.remove('active');
+    document.getElementById('quiz-play-2').style.display = 'block';
+    renderQuestion2();
+  });
+
+  document.getElementById('quiz-restart-2').addEventListener('click', () => {
+    current2 = 0;
+    userAnswers2.fill(null);
+    document.getElementById('quiz-results-2').classList.remove('active');
+    document.getElementById('quiz-play-2').style.display = 'none';
+    document.getElementById('quiz-intro-2').classList.add('active');
   });
 </script>
 
