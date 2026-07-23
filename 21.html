@@ -15,6 +15,7 @@
     --teal: #2C6E63;
     --teal-deep: #1F4F47;
     --amber: #E8A23B;
+    --danger: #B3452D;
     --line: #DEDDD5;
     --tile-bg: #FFFFFF;
     --radius: 3px;
@@ -63,9 +64,9 @@
   h1{
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
     letter-spacing: -0.02em;
-    line-height: 1.05;
+    line-height: 1.15;
     color: var(--teal);
   }
 
@@ -114,7 +115,8 @@
   }
 
   nav.tabs button:focus-visible,
-  .video-placeholder:focus-visible{
+  .opt-btn:focus-visible,
+  .quiz-btn:focus-visible{
     outline: 2px solid var(--teal);
     outline-offset: 2px;
   }
@@ -135,40 +137,22 @@
     to{ opacity:1; transform: translateY(0); }
   }
 
-  /* ---------- Video placeholder ---------- */
+  /* ---------- Video embed ---------- */
 
-  .video-placeholder{
-    position: relative;
+  .video-container{
     width: 100%;
     aspect-ratio: 16 / 9;
     background: var(--tile-bg);
-    border: 1px dashed var(--line);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap: 0.75rem;
+    overflow: hidden;
   }
 
-  .video-placeholder .play{
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .video-placeholder .play svg{ width: 16px; height: 16px; }
-
-  .video-placeholder .label{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+  .video-container iframe{
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
   }
 
   /* ---------- Content placeholder ---------- */
@@ -184,10 +168,403 @@
   .content-placeholder .label{
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.7rem;
+  }
+
+  .content-placeholder ul{
+    list-style: none;
+    display:flex;
+    flex-direction:column;
+    gap: 0.5rem;
+  }
+
+  .content-placeholder li{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .content-placeholder li::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+
+  .opt-inline-image{
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+    background: #FCFCFA;
+  }
+
+  .opt-inline-image img{ width:100%; height:100%; object-fit:contain; display:block; }
+
+  .opt-inline-image .fallback{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+
+  .opt-inline-image .fallback svg{ width:16px; height:16px; opacity:0.35; }
+
+  .ref-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.9rem 0 1.1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+  }
+
+  .ref-table th, .ref-table td{
+    border: 1px solid var(--line);
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+  }
+
+  .ref-table th{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  /* ---------- Quiz ---------- */
+
+  .quiz-progress{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.9rem;
+  }
+
+  .quiz-progress-bar{
+    height: 3px;
+    background: var(--line);
+    border-radius: 999px;
+    margin-bottom: 1.6rem;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill{
+    height: 100%;
+    background: var(--teal);
+    width: 0%;
+    transition: width 0.25s ease;
+  }
+
+  .quiz-card{ display:none; }
+  .quiz-card.active{ display:block; animation: fade 0.3s ease; }
+
+  .q-stem{
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    margin-bottom: 1.1rem;
+  }
+
+  .q-stem ol, .q-stem ul{
+    margin: 0.75rem 0 0 1.3rem;
+  }
+
+  .q-stem li{ margin-bottom: 0.35rem; }
+
+  .q-image-placeholder{
+    position: relative;
+    width: 100%;
+    min-height: 160px;
+    background: var(--tile-bg);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 0.75rem 0 1.1rem;
+  }
+
+  .q-image-placeholder img{
+    display:block;
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    object-fit: contain;
+  }
+
+  .q-image-placeholder .fallback{
+    position: absolute;
+    inset: 0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 0.5rem;
+  }
+
+  .q-image-placeholder svg{ width: 26px; height: 26px; opacity: 0.35; }
+
+  .q-image-placeholder .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--ink-soft);
   }
 
-  /* ---------- Footer ---------- */
+  .q-scheme{
+    display:flex;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0.9rem 0 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .q-scheme .box{
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.8rem;
+    background: var(--tile-bg);
+  }
+
+  .q-scheme .arrow{
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    text-align:center;
+  }
+
+  .q-options{
+    display:flex;
+    flex-direction:column;
+    gap: 0.55rem;
+  }
+
+  .opt-btn{
+    display:flex;
+    align-items:center;
+    gap: 0.75rem;
+    text-align:left;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--tile-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .opt-btn:hover:not(:disabled){ border-color: var(--teal); }
+
+  .opt-btn .opt-letter{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--teal);
+    flex-shrink:0;
+    width: 1.4rem;
+  }
+
+  .opt-btn.selected{ border-color: var(--ink); background: #F2F1EC; }
+
+  .opt-btn.correct{ border-color: var(--teal); background: #EAF3F1; }
+  .opt-btn.correct .opt-letter{ color: var(--teal); }
+
+  .opt-btn.incorrect{ border-color: var(--danger); background: #FBEEEB; }
+  .opt-btn.incorrect .opt-letter{ color: var(--danger); }
+
+  .opt-btn:disabled{ cursor: default; }
+
+  .opt-table-row{ flex-direction:column; align-items:flex-start; gap: 0.25rem; }
+  .opt-table-row .opt-cols{ display:flex; gap: 1.5rem; font-size: 0.88rem; color: var(--ink-soft); padding-left: 2.15rem; }
+  .opt-table-head{
+    display:flex;
+    gap: 1.5rem;
+    padding-left: 2.15rem;
+    margin-bottom: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .opt-image-slot{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #FCFCFA;
+  }
+
+  .opt-image-slot img{
+    display:block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .opt-image-slot .fallback{
+    position: absolute;
+    inset: 0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .opt-image-slot .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .q-options.image-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .q-options.image-grid .opt-btn{
+    flex-direction:column;
+    align-items:stretch;
+    gap: 0.5rem;
+  }
+
+  .q-options.image-grid .opt-letter{ width: auto; }
+
+  .quiz-feedback{
+    display:none;
+    margin-top: 1.1rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .quiz-feedback.show{ display:block; animation: fade 0.3s ease; }
+
+  .quiz-feedback.right{ background: #EAF3F1; border: 1px solid var(--teal); }
+  .quiz-feedback.wrong{ background: #FBEEEB; border: 1px solid var(--danger); }
+
+  .quiz-feedback .fb-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .quiz-feedback.right .fb-title{ color: var(--teal-deep); }
+  .quiz-feedback.wrong .fb-title{ color: var(--danger); }
+
+  .quiz-actions{ margin-top: 1.4rem; display:flex; justify-content:space-between; align-items:center; }
+
+  .quiz-btn-ghost{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    background: none;
+    color: var(--ink-soft);
+    transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  }
+
+  .quiz-btn-ghost:hover:not(:disabled){ border-color: var(--teal); color: var(--teal); }
+  .quiz-btn-ghost:disabled{ opacity: 0.35; cursor: default; }
+
+  .quiz-btn{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--bg);
+    transition: opacity 0.15s ease;
+  }
+
+  .quiz-btn:disabled{ opacity: 0.35; cursor: default; }
+
+  /* ---------- Quiz intro / results ---------- */
+
+  .quiz-state{ display:none; text-align:center; }
+  .quiz-state.active{ display:block; animation: fade 0.3s ease; }
+
+  .quiz-state .kicker{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.6rem;
+  }
+
+  .quiz-state h2{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .quiz-state p{ color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 1.6rem; }
+
+  .score-big{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .score-pct{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.8rem;
+  }
+
+  .revise-list{
+    text-align:left;
+    max-width: 420px;
+    margin: 0 auto 1.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+  }
+
+  .revise-list .revise-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .revise-list ul{ margin-left: 1.1rem; color: var(--ink-soft); font-size: 0.88rem; }
+  .revise-list li{ margin-bottom: 0.3rem; }
+
+  #quiz-play{ display:none; }
 
   footer{
     text-align:center;
@@ -210,70 +587,92 @@
   <button class="tab-btn active" data-panel="l1" role="tab" aria-selected="true">L1</button>
   <button class="tab-btn" data-panel="l2" role="tab" aria-selected="false">L2</button>
   <button class="tab-btn" data-panel="l3" role="tab" aria-selected="false">L3</button>
-  <button class="tab-btn" data-panel="l4" role="tab" aria-selected="false">L4</button>
-  <button class="tab-btn" data-panel="practice" role="tab" aria-selected="false">Practice</button>
+  <button class="tab-btn" data-panel="t" role="tab" aria-selected="false">T</button>
+  <button class="tab-btn" data-panel="practice" role="tab" aria-selected="false">P</button>
 </nav>
 
 <main>
 
   <section class="panel active" id="l1" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play">
-        <svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/IIOQcR2HvMo" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder">
-      <div class="label">Description</div>
+      <div class="label">Learning outcomes</div>
+      <ul>
+        <li>Describe polymers as large molecules built up from small units (monomers), different polymers having different units and/or different linkages</li>
+        <li>Describe the formation of poly(ethene) as an example of addition polymerisation of ethene as the monomer</li>
+        <li>State some uses of poly(ethene) as a typical plastic, e.g. plastic bags; clingfilm</li>
+        <li>Deduce the structure of the polymer product from a given monomer and vice versa</li>
+      </ul>
     </div>
   </section>
 
   <section class="panel" id="l2" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play">
-        <svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/IIOQcR2HvMo" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder">
-      <div class="label">Description</div>
+      <div class="label">Learning outcomes</div>
+      <ul>
+        <li>Describe nylon, a polyamide, and Terylene, a polyester, as condensation polymers, and draw the structure of nylon and Terylene</li>
+        <li>State some typical uses of man-made fibres such as nylon and Terylene, e.g. clothing; curtain materials; fishing line; parachutes; sleeping bags</li>
+        <li>Describe the pollution problems caused by the disposal of non-biodegradable plastics</li>
+        <li>Deduce the structure of the polymer product from a given monomer and vice versa</li>
+      </ul>
     </div>
   </section>
 
   <section class="panel" id="l3" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play">
-        <svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="label">YouTube embed</div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_L3" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder">
-      <div class="label">Description</div>
+      <div class="label">Learning outcomes</div>
+      <ul>
+        <li>Describe the pollution problems caused by the disposal of non-biodegradable plastics</li>
+        <li>Describe two methods of recycling plastics: (i) physical method (exemplified by melting small pieces of poly(ethene) waste into pellets), and (ii) chemical method (exemplified by depolymerisation and cracking of plastic waste into chemical feedstock and fuel respectively)</li>
+        <li>Describe depolymerisation as a process in which polymers are broken down into their monomers, exemplified by hydrolysis of polyesters using acid as a catalyst</li>
+        <li>Discuss the social, economic and environmental issues of recycling plastics</li>
+      </ul>
     </div>
   </section>
-
-  <section class="panel" id="l4" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play">
-        <svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="label">YouTube embed</div>
+  
+  <section class="panel" id="t" role="tabpanel">
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/k0TRh4N7-A4" title="YouTube video player" allowfullscreen></iframe>
     </div>
     <div class="content-placeholder">
-      <div class="label">Description</div>
+      <div class="label">Problem-solving Approach</div>
     </div>
   </section>
 
   <section class="panel" id="practice" role="tabpanel">
-    <div class="video-placeholder" tabindex="0">
-      <div class="play">
-        <svg viewBox="0 0 24 24" fill="#FAFAF7"><path d="M8 5v14l11-7z"/></svg>
+
+    <div class="quiz-state active" id="quiz-intro">
+      <div class="kicker">Practice quiz</div>
+      <h2>Polymers — 40 questions</h2>
+      <p>Multiple choice. You'll see the correct answer and explanation after each question.</p>
+      <button class="quiz-btn" id="quiz-start">Start quiz</button>
+    </div>
+
+    <div id="quiz-play">
+      <div class="quiz-progress" id="quiz-progress-label">Question 1 of 40</div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+      <div id="quiz-card-mount"></div>
+    </div>
+
+    <div class="quiz-state" id="quiz-results">
+      <div class="kicker">Quiz complete</div>
+      <div class="score-big" id="score-big">0 / 40</div>
+      <div class="score-pct" id="score-pct">0%</div>
+      <div class="revise-list" id="revise-list">
+        <div class="revise-title">Concepts to revise</div>
+        <ul id="revise-items"></ul>
       </div>
-      <div class="label">YouTube embed</div>
+      <button class="quiz-btn" id="quiz-restart">Restart quiz</button>
     </div>
-    <div class="content-placeholder">
-      <div class="label">Description</div>
-    </div>
+
   </section>
 
 </main>
@@ -281,6 +680,7 @@
 <footer>THE CHEMISTRY CLASSROOM &middot; @bernardng</footer>
 
 <script>
+  /* ---------- Tabs ---------- */
   const tabBtns = document.querySelectorAll('.tab-btn');
   const panels = document.querySelectorAll('.panel');
 
@@ -288,13 +688,530 @@
     btn.addEventListener('click', () => {
       tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
       panels.forEach(p => p.classList.remove('active'));
-
       btn.classList.add('active');
       btn.setAttribute('aria-selected','true');
       document.getElementById(btn.dataset.panel).classList.add('active');
     });
   });
+
+  /* ---------- Quiz data ---------- */
+  const imgIconSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
+
+  const quizData = [
+    {
+      stem: "Amino acids are essential building blocks in the human body. Macromolecules in food are hydrolysed to form amino acids. Which macromolecules provide the body with amino acids?",
+      options: ["carbohydrates", "fats", "proteins", "sugars"],
+      correct: 2,
+      explanation: "Proteins are polymers made up of amino acid monomers linked by peptide (amide) bonds. Hydrolysing a protein breaks these bonds and releases the individual amino acids. Carbohydrates hydrolyse to sugars, and fats hydrolyse to fatty acids and glycerol — neither produces amino acids.",
+      concept: "Proteins and amino acids"
+    },
+    {
+      stem: "Polymer Z has the structure shown. These four terms can be used to describe polymers.",
+      image: "Structure of polymer Z showing repeating amide linkages",
+      imageFile: "xx.jpg",
+      list: ["addition polymer", "condensation polymer", "polyamide", "polyester"],
+      stemSuffix: "Which two terms can be applied to polymer Z?",
+      options: ["1 and 3", "1 and 4", "2 and 3", "2 and 4"],
+      correct: 2,
+      explanation: "The structure shows repeating –C(=O)–N(H)– linkages (amide/peptide bonds) between units, which is the defining feature of a polyamide. Since the linkage forms by joining monomers with loss of a small molecule (typically water), it is a condensation polymer, not an addition polymer. So the correct terms are 'condensation polymer' and 'polyamide' — option C.",
+      concept: "Identifying polyamides from linkages"
+    },
+    {
+      stem: "Which of these polymers is a protein?",
+      options: ["(C₂H₃Cl)ₙ", "(C₅H₈O₂)ₙ", "(C₆H₁₀O₅)ₙ", "(C₂H₃NO)ₙ"],
+      correct: 3,
+      explanation: "Proteins are the only macromolecule among these that contains nitrogen (from the amine part of amino acid monomers), so the repeat unit must include an N atom. Only (C₂H₃NO)ₙ contains nitrogen — this is the repeat unit pattern for a protein/polyamide. (C₂H₃Cl)ₙ is poly(chloroethene), PVC; (C₅H₈O₂)ₙ and (C₆H₁₀O₅)ₙ are carbohydrate-type formulae with no nitrogen.",
+      concept: "Recognising proteins from molecular formula"
+    },
+    {
+      stem: "In the addition polymer poly(propene), what is the simplest ratio of carbon atoms to hydrogen atoms?",
+      optionsType: "table",
+      tableHead: ["Carbon atoms", "Hydrogen atoms"],
+      options: [["1", "2"], ["2", "1"], ["2", "4"], ["3", "6"]],
+      correct: 0,
+      explanation: "Propene's molecular formula is C₃H₆, giving a carbon-to-hydrogen ratio of 3:6, which simplifies to 1:2. Since poly(propene) is formed purely by addition polymerisation (no atoms are lost), the repeat unit keeps the same ratio of atoms as the monomer: 1 carbon to 2 hydrogens — option A.",
+      concept: "Simplest ratios in addition polymers"
+    },
+    {
+      stem: "A carbohydrate such as starch can be represented as shown. What is X?",
+      image: "Repeating unit diagram of starch with X linking the units",
+      imageFile: "xx.jpg",
+      options: ["carbon", "hydrogen", "nitrogen", "oxygen"],
+      correct: 3,
+      explanation: "Starch is a polysaccharide in which glucose monomer units are joined through oxygen atoms (glycosidic, –O–, linkages), formed by condensation with loss of water. So the linking atom X between the repeating units is oxygen.",
+      concept: "Structure of carbohydrates/starch"
+    },
+    {
+      stem: "P is a polymer that has six carbon atoms in each of the monomers from which it was formed, is not a polyester, and was formed using condensation polymerisation. What is the partial structure of P?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 1,
+      explanation: "Since P is a condensation polymer but not a polyester, it must be a polyamide, meaning it has –C(=O)–N(H)– linkages rather than –C(=O)–O– ester linkages. It also needs six carbon atoms in each monomer — matching a (CH₂)₆ chain length on both the diacid- and diamine-derived parts. Option B shows the amide (–CONH–) linkage with six-carbon chains on both sides, matching all three criteria.",
+      concept: "Distinguishing polyamides from polyesters"
+    },
+    {
+      stem: "Which of the following is not a condensation polymer?",
+      options: ["nylon", "poly(ethene)", "protein", "Terylene"],
+      correct: 1,
+      explanation: "Nylon (a polyamide), protein, and Terylene (a polyester) are all condensation polymers, formed with the loss of a small molecule (usually water) as monomers join. Poly(ethene), however, is formed by addition polymerisation of ethene monomers, with no atoms lost — so it is not a condensation polymer.",
+      concept: "Addition vs condensation polymers"
+    },
+    {
+      stem: "Fats, carbohydrates and proteins all contain which chemical elements?",
+      options: ["carbon, hydrogen and oxygen", "carbon, hydrogen and nitrogen", "carbon, hydrogen and sulfur", "carbon, nitrogen and oxygen"],
+      correct: 0,
+      explanation: "Fats, carbohydrates, and proteins are all built from carbon, hydrogen, and oxygen. Proteins additionally contain nitrogen (and sometimes sulfur), but since the question asks what's common to all three, only carbon, hydrogen, and oxygen are shared by all of them.",
+      concept: "Common elements in biological macromolecules"
+    },
+    {
+      stem: "The table gives some statements about some macromolecules. Which pairs of statements are correct?",
+      refTable: {
+        headers: ["#", "Fats contain the linkage / Proteins contain the linkage"],
+        rows: [
+          ["1", "fats: –O–C(=O)– / proteins: –C(=O)–N(H)–"],
+          ["2", "poly(ethene) is made by addition polymerisation / Terylene is made by condensation polymerisation"],
+          ["3", "starch can be hydrolysed to produce sugars / proteins can be hydrolysed to produce amino acids"],
+          ["4", "Terylene is a naturally occurring polymer / nylon is a man-made polymer"]
+        ]
+      },
+      options: ["1 and 2 only", "2 and 3 only", "3 and 4", "1, 2 and 3"],
+      correct: 3,
+      explanation: "Statement 1 is correct: fats contain the ester linkage (–O–C(=O)–) and proteins contain the amide/peptide linkage (–C(=O)–NH–). Statement 2 is correct: poly(ethene) is indeed made by addition polymerisation, and Terylene by condensation polymerisation. Statement 3 is correct: starch hydrolyses to sugars, and proteins hydrolyse to amino acids. Statement 4 is wrong: Terylene is actually a synthetic (man-made) polymer, not naturally occurring. So statements 1, 2 and 3 are correct — option D.",
+      concept: "Properties of fats, proteins, and synthetic polymers"
+    },
+    {
+      stem: "Which of these compounds could react together to form a polymer?",
+      list: ["H₂N(CH₂)₆NH₂", "CH₃(CH₂)₄COOH", "HOOC(CH₂)₄COOH", "H₂N(CH₂)₆CH₃"],
+      options: ["1 and 2", "1 and 3", "2 and 4", "3 and 4"],
+      correct: 1,
+      explanation: "To form a condensation polymer, you need monomers with two reactive end groups each (so the chain can keep growing in both directions). Compound 1, H₂N(CH₂)₆NH₂, is a diamine (–NH₂ at both ends). Compound 3, HOOC(CH₂)₄COOH, is a diacid (–COOH at both ends). Together, a diamine and a diacid undergo condensation polymerisation to form a polyamide (like nylon) — so 1 and 3 react together. Compounds 2 and 4 each have only one reactive end group, so they can't form a long-chain polymer.",
+      concept: "Requirements for condensation polymerisation (difunctional monomers)"
+    },
+    {
+      stem: "Nylon, poly(ethene) and Terylene are macromolecules. In which of these macromolecules is the C=O group present in the linkage?",
+      options: ["nylon and Terylene only", "nylon only", "poly(ethene) and Terylene only", "Terylene only"],
+      correct: 0,
+      explanation: "Nylon's amide linkage is –C(=O)–NH– and Terylene's ester linkage is –C(=O)–O– — both contain a C=O (carbonyl) group. Poly(ethene) is formed by simple addition polymerisation of ethene and has no such linkage at all (it's just a long hydrocarbon chain) — so C=O is present in nylon and Terylene only.",
+      concept: "Recognising C=O in polyamide/polyester linkages"
+    },
+    {
+      stem: "Glucose is a simple sugar. Glycine is an amino acid. In the diagram, which two arrows correctly show the hydrolysis products of a carbohydrate and of a protein?",
+      image: "Diagram with arrows 1-4 connecting 'a carbohydrate' and 'a protein' boxes to 'glucose' and 'glycine' boxes",
+      imageFile: "xx.jpg",
+      options: ["1 and 3", "1 and 4", "2 and 3", "2 and 4"],
+      correct: 1,
+      explanation: "A carbohydrate hydrolyses to give a simple sugar like glucose, and a protein hydrolyses to give amino acids like glycine. Based on the diagram's arrow numbering, the arrow from 'a carbohydrate' to 'glucose' is arrow 1, and the arrow from 'a protein' to 'glycine' is arrow 4 — so the correct pair is 1 and 4.",
+      concept: "Hydrolysis products of carbohydrates and proteins"
+    },
+    {
+      stem: "Poly(ethene) is the addition polymer formed from the monomer ethene. Which statement is correct?",
+      options: [
+        "Poly(ethene) can be disposed of by burning – this produces carbon dioxide and water.",
+        "Poly(ethene) decolourises bromine water.",
+        "Poly(ethene) has the empirical formula C₂H₄.",
+        "Poly(ethene) is acted upon by bacteria so that it decomposes quickly when in a landfill site."
+      ],
+      correct: 0,
+      explanation: "Poly(ethene) is a hydrocarbon, so burning it (combustion) produces carbon dioxide and water, just like burning any hydrocarbon fuel — statement A is correct. It does not decolourise bromine water because, unlike its monomer ethene, poly(ethene) is saturated (all the C=C double bonds have been used up in polymerisation). Its empirical formula is CH₂ (simplest ratio, not C₂H₄, which is the molecular formula of the repeat unit doubled up). It's also non-biodegradable, so bacteria do not readily break it down in landfill.",
+      concept: "Properties and disposal of poly(ethene)"
+    },
+    {
+      stem: "The diagrams show four monomers. How many of these monomers would react with the molecule HOOC–(triangle)–COOH to form a polymer?",
+      image: "Four monomer structures (diamine, amino acid types, diol) and the diacid molecule",
+      imageFile: "xx.jpg",
+      options: ["1", "2", "3", "4"],
+      correct: 2,
+      explanation: "The given molecule is a diacid (–COOH at both ends). For a condensation reaction to form a polymer, each monomer needs a group that can react with –COOH — either an –NH₂ (amine) or an –OH (alcohol) group, and ideally at both ends to keep the chain growing. Of the four monomers (a diamine H₂N–X–NH₂, an amino acid-type HOOC–X–NH₂, another amino-alcohol type HO–X–NH₂, and a diol HO–X–OH), three of them have a suitable reactive end group (–NH₂ or –OH) that can react with the diacid's –COOH groups, giving 3 monomers that would react to form a polymer.",
+      concept: "Matching functional groups for condensation polymerisation"
+    },
+    {
+      stem: "Which of the following is a type of naturally occurring polymer?",
+      options: ["paraffin", "polyethene", "protein", "sugar"],
+      correct: 2,
+      explanation: "Protein is a naturally occurring polymer (a polyamide made of amino acid monomers). Sugar (glucose) is a monomer, not a polymer itself — starch would be the polymer form. Paraffin is a mixture of hydrocarbons, not a polymer, and polyethene is a synthetic (man-made) polymer.",
+      concept: "Natural vs synthetic polymers"
+    },
+    {
+      stem: "Which statement about macromolecules is correct?",
+      options: [
+        "Nylon and Terylene are both polyesters.",
+        "Proteins and nylon have the same monomer units.",
+        "Proteins have the same amide linkages as nylon.",
+        "Terylene and fats are esters but with different linkages."
+      ],
+      correct: 2,
+      explanation: "Nylon is a polyamide and Terylene is a polyester — they are not both polyesters, so A is wrong. Proteins are made from amino acid monomers while nylon is made from diamines and diacids — different monomers, so B is wrong. Both proteins and nylon contain the same –C(=O)–NH– amide linkage, so C is correct. Terylene and fats are both esters and share the same –C(=O)–O– ester linkage (not different linkages), so D is wrong.",
+      concept: "Comparing linkages across macromolecules"
+    },
+    {
+      stem: "Four conversions are listed. Which two conversions are not examples of hydrolysis?",
+      list: ["amino acids to proteins", "ethene to poly(ethene)", "proteins to amino acids", "starch to glucose"],
+      options: ["1 and 2", "1 and 4", "2 and 3", "2 and 4"],
+      correct: 0,
+      explanation: "Hydrolysis breaks a polymer down into its monomers using water. Conversion 3 (proteins to amino acids) and conversion 4 (starch to glucose) are both hydrolysis reactions. Conversion 1 (amino acids to proteins) is actually the reverse — condensation polymerisation, building the polymer up, not breaking it down. Conversion 2 (ethene to poly(ethene)) is addition polymerisation, also building up, not hydrolysis. So the two conversions that are NOT hydrolysis are 1 and 2.",
+      concept: "Hydrolysis vs polymerisation"
+    },
+    {
+      stem: "Which bond is present in both nylon and Terylene?",
+      options: ["C – O", "C = O", "N – C", "N – H"],
+      correct: 1,
+      explanation: "Nylon's linkage is –C(=O)–NH– (amide) and Terylene's linkage is –C(=O)–O– (ester). Both contain a C=O (carbonyl double bond) as part of their linkage. C–O and N–C single bonds are present in only one of the two (Terylene has C–O, nylon has N–C), and N–H is present only in nylon, not Terylene.",
+      concept: "Shared bonds in polyamides and polyesters"
+    },
+    {
+      stem: "Which pair of macromolecules both contain the linkage shown: –C(=O)–N(H)–?",
+      image: "The amide/peptide linkage structure",
+      imageFile: "xx.jpg",
+      options: ["fats and proteins", "nylon and proteins", "starch and sugars", "Terylene and sugars"],
+      correct: 1,
+      explanation: "The linkage shown, –C(=O)–NH–, is the amide (peptide) linkage. This linkage is found in both nylon (a synthetic polyamide) and proteins (natural polyamides made from amino acids). Fats contain ester linkages, and starch/sugars contain glycosidic (C–O–C) linkages — neither matches the amide linkage shown.",
+      concept: "Identifying the amide linkage across macromolecules"
+    },
+    {
+      stem: "The macromolecules of proteins, fats and carbohydrates can all be broken down into their simple units by a similar process. What is the process called?",
+      options: ["esterification", "hydrolysis", "oxidation", "reduction"],
+      correct: 1,
+      explanation: "Breaking down large macromolecules into their simple monomer units, using water to break the linking bonds, is called hydrolysis. This applies across proteins (→ amino acids), fats (→ fatty acids and glycerol), and carbohydrates (→ simple sugars).",
+      concept: "Hydrolysis as a general breakdown process"
+    },
+    {
+      stem: "Which formula represents a compound likely to undergo addition polymerisation?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 3,
+      explanation: "Addition polymerisation requires a monomer with a C=C double bond, which opens up to link monomers together without losing any atoms. Structure D shows a compound with a C=C double bond (an alkene-type structure), making it suitable for addition polymerisation. The other structures are a saturated alkane (A), and compounds with amine/carboxylic acid or ester groups more suited to condensation polymerisation (B, C).",
+      concept: "Requirements for addition polymerisation (C=C bond)"
+    },
+    {
+      stem: "Carbohydrates, proteins, fats and Terylene are macromolecules. Which element is found in only one of these macromolecules?",
+      options: ["carbon", "hydrogen", "nitrogen", "oxygen"],
+      correct: 2,
+      explanation: "Carbon, hydrogen, and oxygen are found across multiple of these macromolecules (carbohydrates, fats, and Terylene all contain C, H, and O; proteins contain these too). Nitrogen, however, is found only in proteins (from the amine groups of amino acids) — not in carbohydrates, fats, or Terylene. So nitrogen is the element found in only one of these macromolecules.",
+      concept: "Distinguishing elemental composition of macromolecules"
+    },
+    {
+      stem: "A polymer X is hydrolysed and the two products are HO–C(=O)–(hatched)–C(=O)–OH and H₂N–(hatched)–NH₂. What can be deduced about X?",
+      image: "Hydrolysis products: a diacid and a diamine",
+      imageFile: "xx.jpg",
+      options: ["It is a condensation polymer.", "It is made by addition polymerisation.", "It is starch.", "It is Terylene."],
+      correct: 0,
+      explanation: "Since X hydrolyses into two separate monomer units (a diacid and a diamine), it must have been formed by joining those monomers together with loss of water — i.e., X is a condensation polymer (in fact, since the products are a diacid and a diamine, X would specifically be a polyamide like nylon). It cannot be an addition polymer (those don't hydrolyse into two different monomer types), it isn't starch (which would hydrolyse to glucose, not a diacid/diamine), and it isn't Terylene (a polyester, which would hydrolyse to a diacid and a diol, not a diamine).",
+      concept: "Deducing polymer type from hydrolysis products"
+    },
+    {
+      stem: "Which statement about Terylene is correct?",
+      options: ["It is an addition polymer.", "It is an alkene.", "It is a polyamide.", "It is a polyester."],
+      correct: 3,
+      explanation: "Terylene is formed by condensation polymerisation of a diol and a diacid, joined by ester linkages (–C(=O)–O–), making it a polyester. It is not formed by addition polymerisation, is not an alkene, and does not contain amide linkages (so it isn't a polyamide).",
+      concept: "Classifying Terylene"
+    },
+    {
+      stem: "A section of a polymer is shown, formed from a monomer H–O–(square)–O–H by condensation polymerisation. What is made each time a monomer adds to the polymer?",
+      image: "Polymer repeat unit and its diol-type monomer",
+      imageFile: "xx.jpg",
+      options: ["hydrogen molecules, H₂", "hydroxide ions, OH⁻", "oxygen atoms, O", "water molecules, H₂O"],
+      correct: 3,
+      explanation: "In condensation polymerisation, each time a new monomer joins the growing chain, a small molecule — typically water, H₂O — is released as the new bond forms between the monomer and the polymer chain. This is what distinguishes condensation polymerisation from addition polymerisation, where nothing is lost.",
+      concept: "By-products of condensation polymerisation"
+    },
+    {
+      stem: "Information about the gases present in the atmospheres of four planets is given below. Which planet's atmosphere contains the four elements found in all proteins?",
+      optionsType: "table",
+      tableHead: ["Gas 1", "Gas 2 / Gas 3"],
+      options: [["CH₄", "NH₃ / HCl"], ["CH₄", "NH₃ / H₂O"], ["CH₄", "SO₂ / HCl"], ["SO₂", "NH₃ / H₂O"]],
+      correct: 1,
+      explanation: "Proteins are built from carbon, hydrogen, oxygen, and nitrogen (C, H, O, N). Looking at the gas combinations: CH₄ provides carbon and hydrogen, NH₃ provides nitrogen (and hydrogen), and H₂O provides oxygen (and hydrogen). The combination CH₄, NH₃, and H₂O together supply all four elements C, H, N, and O — option B. The other combinations are missing either oxygen (options with HCl instead of H₂O) or carbon (option D, which has SO₂ instead of CH₄).",
+      concept: "Elements required for protein formation"
+    },
+    {
+      stem: "Terylene (a polyester) is made by condensation polymerisation of two monomers: HO–C(=O)–(rectangle)–C(=O)–OH and HO–(oval)–OH. What is the repeat unit of the polymer?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 3,
+      explanation: "The repeat unit of Terylene links the diacid and diol monomers via ester (–C(=O)–O–) bonds, with the –OH from the acid and one –H from the diol lost as water on each side. This gives a repeat unit of the form –C(=O)–(rectangle)–C(=O)–O–(oval)–O– : an ester linkage on one side connecting into the diol unit, repeated. Option D correctly shows this pattern with the carbonyl groups both pointing into a single ester linkage that connects through oxygen to the oval unit, and out through oxygen on the far side ready to repeat.",
+      concept: "Repeat unit of a polyester"
+    },
+    {
+      stem: "Poly(ethene) can be manufactured by the process below: decane --(cracking)--> ethene --(polymerisation)--> poly(ethene). Which diagram shows the change in molecular size during this process?",
+      optionsType: "image",
+      options: ["Diagram A", "Diagram B", "Diagram C", "Diagram D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 1,
+      explanation: "Cracking breaks large decane molecules down into smaller molecules (like ethene), so molecular size decreases in the first step. Then, polymerisation joins many small ethene molecules into a very large poly(ethene) molecule, so molecular size increases sharply in the second step. This means the graph should dip down first (cracking, decreasing size) and then rise steeply (polymerisation, increasing size) — matching diagram B.",
+      concept: "Molecular size changes: cracking vs polymerisation"
+    },
+    {
+      stem: "What is produced when proteins are hydrolysed?",
+      options: ["alcohols", "amides", "amino acids", "sugars"],
+      correct: 2,
+      explanation: "Hydrolysing a protein breaks the amide (peptide) linkages between its monomer units, releasing the individual amino acids that made up the protein.",
+      concept: "Hydrolysis products of proteins"
+    },
+    {
+      stem: "In the polymerisation of ethene to form poly(ethene), which of the following does not change?",
+      options: ["boiling point", "density", "empirical formula", "molecular mass"],
+      correct: 2,
+      explanation: "Ethene's molecular formula is C₂H₄, giving an empirical formula of CH₂. Poly(ethene) is made of repeating –CH₂–CH₂– units, so its empirical formula is also CH₂ — unchanged. Physical properties like boiling point, density, and molecular mass all change dramatically, since poly(ethene) is a huge, solid macromolecule very different from the small gaseous ethene monomer.",
+      concept: "What stays the same in addition polymerisation"
+    },
+    {
+      stem: "In which pair of macromolecules are the linkages the same?",
+      options: ["fats and proteins", "nylon and fats", "nylon and proteins", "proteins and Terylene"],
+      correct: 2,
+      explanation: "Nylon and proteins both contain the amide (peptide) linkage, –C(=O)–NH–, even though nylon is synthetic and proteins are natural. Fats contain ester linkages (different from both nylon's and proteins' amide linkages), and Terylene also contains ester linkages, different from proteins' amide linkages.",
+      concept: "Matching linkages across natural and synthetic polymers"
+    },
+    {
+      stem: "Which polymer would hydrolyse to amino acids?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 2,
+      explanation: "A polymer that hydrolyses to amino acids must be a protein, meaning it needs the amide (peptide) linkage: –C(=O)–NH–, connecting monomer units that each contain both an acid end and an amine end. Structure C shows repeating –C(=O)–NH– linkages consistent with a protein/polyamide structure built from amino-acid-like units. The other structures show ester linkages (A, B — more consistent with polyesters/carbohydrates) or a different amide arrangement not matching amino acid monomers (D).",
+      concept: "Identifying protein-type polymers from structure"
+    },
+    {
+      stem: "The structural formula of a polymer is shown, with repeating –CH(C₂H₅)–CHCl– units. Which one of the following will form this polymer?",
+      optionsType: "image",
+      options: ["Structure A", "Structure B", "Structure C", "Structure D"],
+      optionImages: ["xx.jpg", "xx.jpg", "xx.jpg", "xx.jpg"],
+      correct: 1,
+      explanation: "Since this polymer has a simple repeating carbon backbone with C₂H₅ and Cl substituents (no ester or amide linkages), it must be formed by addition polymerisation of an alkene monomer. The monomer needs a C=C double bond with a C₂H₅ group on one carbon and a Cl on the other, matching the substituent pattern in the repeat unit. Only one of the four options shows the correct alkene (with a C=C bond) bearing exactly these two substituents in the right positions to give this repeat unit upon polymerisation — option B.",
+      concept: "Deducing the monomer from an addition polymer's repeat unit"
+    },
+    {
+      stem: "Cholesterol is an organic molecule that occurs in the blood stream. What type of compound is cholesterol?",
+      options: ["an acid", "an alcohol", "an alkane", "an alkene"],
+      correct: 1,
+      explanation: "Cholesterol contains a hydroxyl (–OH) group as its main functional group, classifying it as an alcohol (specifically a type of complex alcohol called a sterol).",
+      concept: "Functional group classification"
+    },
+    {
+      stem: "Which natural resource is being depleted by the manufacture of plastics?",
+      options: ["air", "fossil fuels", "metal ores", "water"],
+      correct: 1,
+      explanation: "Most plastics are manufactured from chemicals derived from crude oil, a fossil fuel. As plastic production continues, the finite supply of fossil fuels used as the raw material is gradually depleted.",
+      concept: "Environmental impact of plastics manufacture"
+    },
+    {
+      stem: "Which element is least likely to be found in a macromolecule?",
+      options: ["carbon", "hydrogen", "oxygen", "sodium"],
+      correct: 3,
+      explanation: "Common macromolecules (carbohydrates, fats, proteins, and synthetic polymers) are built primarily from carbon, hydrogen, oxygen, and sometimes nitrogen. Sodium, a metal, is not typically part of the covalent backbone or linkages of these macromolecules, making it the least likely element to be found in one.",
+      concept: "Typical elements in macromolecules"
+    },
+    {
+      stem: "A macromolecule is made from the two monomer molecules HO–C(=O)–(hatched)–C(=O)–OH and HO–(rectangle)–OH. What is the macromolecule?",
+      image: "A diacid monomer and a diol monomer",
+      imageFile: "xx.jpg",
+      options: ["a carbohydrate", "a polyamide", "a polyester", "a protein"],
+      correct: 2,
+      explanation: "The two monomers are a diacid (HOOC–...–COOH) and a diol (HO–...–OH). Reacting a diacid with a diol via condensation polymerisation produces ester linkages throughout the chain, making the resulting macromolecule a polyester (like Terylene).",
+      concept: "Identifying polyester formation from diacid + diol monomers"
+    },
+    {
+      stem: "The equation represents the conversion of starch to a simple sugar: (C₆H₁₀O₅)ₙ + nH₂O → nC₆H₁₂O₆. This reaction is an example of",
+      options: ["condensation.", "hydrogenation.", "hydrolysis.", "polymerisation."],
+      correct: 2,
+      explanation: "The equation shows starch reacting with water to break down into many glucose molecules. Since water is being added to break the polymer into its monomer units, this is hydrolysis, not condensation (condensation would release water while building up the polymer, the reverse process).",
+      concept: "Recognising hydrolysis from a chemical equation"
+    },
+    {
+      stem: "Amino acids are produced when proteins are",
+      options: ["hydrolysed.", "oxidised.", "polymerised.", "substituted."],
+      correct: 0,
+      explanation: "Hydrolysing a protein breaks the amide (peptide) bonds linking its amino acid monomers, releasing the individual amino acids.",
+      concept: "Hydrolysis of proteins"
+    },
+    {
+      stem: "The repeating units of two polymers, X and Y, are shown below. X has the linkage –C(=O)–(rectangle)–C(=O)–N(H)–(oval)–N(H)– and Y has the linkage –C(=O)–(rectangle)–C(=O)–O–(oval)–O–. What are X and Y?",
+      image: "Repeat units of polymers X and Y showing amide vs ester linkages",
+      imageFile: "xx.jpg",
+      optionsType: "table",
+      tableHead: ["X", "Y"],
+      options: [["nylon", "Terylene"], ["starch", "Terylene"], ["protein", "starch"], ["nylon", "protein"]],
+      correct: 0,
+      explanation: "X contains the –C(=O)–NH– amide linkage, characteristic of a polyamide — since it's built from a diacid and a diamine (both shown as generic rectangle/oval groups, suggesting a synthetic polymer), X is nylon. Y contains the –C(=O)–O– ester linkage, characteristic of a polyester — built from a diacid and a diol, so Y is Terylene. So X is nylon and Y is Terylene — option A.",
+      concept: "Distinguishing nylon (polyamide) from Terylene (polyester) by linkage"
+    }
+  ];
+
+  /* ---------- Quiz state ---------- */
+  let current = 0;
+  const userAnswers = new Array(quizData.length).fill(null); // stores selected index per question, or null if unanswered
+  const letters = ['A','B','C','D'];
+
+  const mount = document.getElementById('quiz-card-mount');
+  const progressLabel = document.getElementById('quiz-progress-label');
+  const progressFill = document.getElementById('quiz-progress-fill');
+
+  function renderQuestion(){
+    const q = quizData[current];
+    progressLabel.textContent = `Question ${current + 1} of ${quizData.length}`;
+    progressFill.style.width = `${(current / quizData.length) * 100}%`;
+
+    let html = `<div class="quiz-card active"><div class="q-stem"><p>${q.stem}</p>`;
+
+    if (q.list){
+      html += '<ol>' + q.list.map(item => `<li>${item}</li>`).join('') + '</ol>';
+    }
+
+    if (q.scheme){
+      html += `<div class="q-scheme">
+        <div class="box">${q.scheme[0]}</div>
+        <div class="arrow">${q.scheme[1]}<br>&rarr;</div>
+        <div class="box">${q.scheme[2]}</div>
+        <div class="arrow">${q.scheme[3]}<br>&rarr;</div>
+        <div class="box">${q.scheme[4]}</div>
+      </div>`;
+    }
+
+    html += '</div>';
+
+    if (q.image){
+      const imgUrl = `/thechemclassroom/images/${q.imageFile || 'xx.jpg'}`;
+      html += `<div class="q-image-placeholder">
+        <img src="${imgUrl}" alt="${q.image}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="fallback">${imgIconSVG}<div class="label">Image placeholder — ${q.image}</div></div>
+      </div>`;
+    }
+
+    if (q.optionsType === 'table'){
+      html += `<div class="opt-table-head"><span>${q.tableHead[0]}</span><span>${q.tableHead[1]}</span></div>`;
+      html += '<div class="q-options">';
+      q.options.forEach((row, i) => {
+        html += `<button class="opt-btn opt-table-row" data-index="${i}">
+          <div style="display:flex; align-items:center; gap:0.75rem;"><span class="opt-letter">${letters[i]}</span></div>
+          <div class="opt-cols"><span>${row[0]}</span><span>${row[1]}</span></div>
+        </button>`;
+      });
+      html += '</div>';
+    } else if (q.optionsType === 'image'){
+      html += '<div class="q-options image-grid">';
+      q.options.forEach((opt, i) => {
+        const imgUrl = `/thechemclassroom/images/${(q.optionImages && q.optionImages[i]) || 'xx.jpg'}`;
+        html += `<button class="opt-btn" data-index="${i}">
+          <span class="opt-letter">${letters[i]}</span>
+          <div class="opt-image-slot">
+            <img src="${imgUrl}" alt="Option ${letters[i]} structure" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="fallback">${imgIconSVG}<span class="label" style="margin-left:0.4rem;">Image placeholder</span></div>
+          </div>
+        </button>`;
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="q-options">';
+      q.options.forEach((opt, i) => {
+        html += `<button class="opt-btn" data-index="${i}"><span class="opt-letter">${letters[i]}</span><span>${opt}</span></button>`;
+      });
+      html += '</div>';
+    }
+
+    html += `<div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn-ghost" id="quiz-prev">&larr; Previous</button>
+        <button class="quiz-btn" id="quiz-action" style="visibility:hidden;">Next question</button>
+      </div>
+    </div>`;
+
+    mount.innerHTML = html;
+    bindQuestionEvents(q);
+
+    const prevBtn = document.getElementById('quiz-prev');
+    prevBtn.disabled = current === 0;
+    prevBtn.addEventListener('click', () => {
+      if (current > 0){ current--; renderQuestion(); }
+    });
+  }
+
+  function showFeedbackAndLock(q, selectedIndex, optBtns){
+    const isCorrect = selectedIndex === q.correct;
+    optBtns.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add('correct');
+      if (i === selectedIndex && !isCorrect) b.classList.add('incorrect');
+      if (i === selectedIndex) b.classList.add('selected');
+    });
+    const fb = document.getElementById('quiz-feedback');
+    fb.classList.add('show', isCorrect ? 'right' : 'wrong');
+    fb.innerHTML = `<div class="fb-title">${isCorrect ? 'Correct' : 'Not quite'}</div><div>${q.explanation}</div>`;
+  }
+
+  function bindQuestionEvents(q){
+    const optBtns = mount.querySelectorAll('.opt-btn');
+    const actionBtn = document.getElementById('quiz-action');
+    const alreadyAnswered = userAnswers[current] !== null;
+
+    actionBtn.textContent = current === quizData.length - 1 ? 'See results' : 'Next question';
+
+    if (alreadyAnswered){
+      // Review mode: show the locked-in answer and explanation immediately, read-only.
+      showFeedbackAndLock(q, userAnswers[current], optBtns);
+      actionBtn.style.visibility = 'visible';
+    } else {
+      optBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const selected = parseInt(btn.dataset.index, 10);
+          userAnswers[current] = selected;
+          showFeedbackAndLock(q, selected, optBtns);
+          actionBtn.style.visibility = 'visible';
+        });
+      });
+    }
+
+    actionBtn.addEventListener('click', () => {
+      current++;
+      if (current < quizData.length){
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+  }
+
+  function showResults(){
+    let score = 0;
+    const missedConcepts = new Set();
+    quizData.forEach((q, i) => {
+      if (userAnswers[i] === q.correct) score++;
+      else if (userAnswers[i] !== null) missedConcepts.add(q.concept);
+    });
+
+    document.getElementById('quiz-play').style.display = 'none';
+    const resultsEl = document.getElementById('quiz-results');
+    resultsEl.classList.add('active');
+    document.getElementById('score-big').textContent = `${score} / ${quizData.length}`;
+    document.getElementById('score-pct').textContent = `${Math.round((score / quizData.length) * 100)}%`;
+
+    const reviseItems = document.getElementById('revise-items');
+    const reviseBox = document.getElementById('revise-list');
+    if (missedConcepts.size === 0){
+      reviseBox.innerHTML = '<div class="revise-title">Nice work — no gaps to revise.</div>';
+    } else {
+      reviseBox.innerHTML = '<div class="revise-title">Concepts to revise</div><ul id="revise-items"></ul>';
+      document.getElementById('revise-items').innerHTML = Array.from(missedConcepts).map(c => `<li>${c}</li>`).join('');
+    }
+  }
+
+  document.getElementById('quiz-start').addEventListener('click', () => {
+    document.getElementById('quiz-intro').classList.remove('active');
+    document.getElementById('quiz-play').style.display = 'block';
+    renderQuestion();
+  });
+
+  document.getElementById('quiz-restart').addEventListener('click', () => {
+    current = 0;
+    userAnswers.fill(null);
+    document.getElementById('quiz-results').classList.remove('active');
+    document.getElementById('quiz-play').style.display = 'none';
+    document.getElementById('quiz-intro').classList.add('active');
+  });
+
 </script>
+
 
 </body>
 </html>
