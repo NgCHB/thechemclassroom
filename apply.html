@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>O Level Chemistry Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8;
+    --surface:#FFFFFF;
+    --ink:#16211F;
+    --ink-soft:#6C7A77;
+    --line: rgba(22,33,31,0.13);
+    --accent:#2C6E62;
+    --accent-soft:#E3EEEC;
+    --green:#2F7D4F;
+    --green-soft:#E5F3EA;
+    --red:#C1443A;
+    --red-soft:#FBE9E7;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    font-size:15px;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .display{font-family:'Fraunces', serif;}
+
+  .app{
+    max-width:640px;
+    margin:0 auto;
+    padding:20px 16px 64px;
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:19px;
+  }
+  .exit-btn{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    padding:6px 11px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .exit-btn:not([hidden]){display:inline-block;}
+  .exit-btn[hidden]{display:none;}
+
+  .progress-wrap{
+    display:none;
+    margin-bottom:20px;
+  }
+  .progress-wrap.active{display:block;}
+  .progress-meta{
+    display:flex;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .progress-track{
+    height:4px;
+    background:var(--line);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--accent);
+    transition:width 0.35s ease;
+  }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+
+  /* ---------- Mode select ---------- */
+  .hero{ margin-bottom:24px; }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.2;
+    margin:0 0 8px;
+  }
+  .hero p{
+    color:var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.5;
+    margin:0;
+  }
+
+  .modes{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:20px;
+  }
+  .mode-card{
+    text-align:left;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    cursor:pointer;
+    display:flex;
+    gap:14px;
+    align-items:center;
+    min-height:44px;
+  }
+  .mode-card:hover, .mode-card:focus-visible{ border-color:var(--accent); }
+  .mode-card .glyph{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:13px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-radius:7px;
+    width:34px; height:34px;
+    min-width:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .mode-card h3{
+    font-size:15.5px;
+    margin:0 0 2px;
+    font-weight:600;
+  }
+  .mode-card p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:13px;
+    line-height:1.4;
+  }
+
+  .setup-row{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .count-control{ display:flex; align-items:center; gap:10px; }
+  .count-control button{
+    width:32px;height:32px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    cursor:pointer;
+    font-size:15px;
+  }
+  .count-control button:hover{border-color:var(--accent);}
+  .count-control .n{ min-width:22px; text-align:center; color:var(--ink); font-weight:600; }
+
+  /* ---------- Question screen ---------- */
+  .q-eyebrow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .q-eyebrow .num{ color:var(--ink); font-weight:600;}
+
+  .review-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--accent);
+    padding:9px 13px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:16px;
+    width:100%;
+    min-height:40px;
+    justify-content:center;
+  }
+  .review-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
+  .review-btn::before{ content:"?"; display:flex; align-items:center; justify-content:center; width:16px;height:16px; border-radius:50%; border:1px solid currentColor; font-size:10px; }
+
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    background:var(--bg);
+    color:var(--ink-soft);
+    border-radius:999px;
+    padding:3px 9px;
+    border:1px solid var(--line);
+    display:inline-block;
+  }
+  .tag.topic{ color:var(--accent); border-color:var(--accent); }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0;
+    background:rgba(22,33,31,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-backdrop[hidden]{ display:none; }
+  .modal-sheet{
+    background:var(--surface);
+    border-radius:12px;
+    max-width:420px;
+    width:100%;
+    max-height:80vh;
+    overflow-y:auto;
+    padding:18px;
+  }
+  .modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .modal-title{
+    font-weight:600;
+    font-size:15px;
+  }
+  .modal-x{
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    width:28px;height:28px;
+    border-radius:7px;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .modal-x:hover{ border-color:var(--accent); color:var(--accent); }
+  .modal-body{ font-size:14px; line-height:1.6; color:var(--ink); }
+  .modal-body .modal-section{ margin-bottom:14px; }
+  .modal-body .modal-section:last-child{ margin-bottom:0; }
+  .modal-body .modal-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .modal-body .taglist{ display:flex; flex-wrap:wrap; gap:6px; }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .modal-actions button{ flex:1; }
+
+  /* ---------- diagram placeholder ---------- */
+  .diagram{
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:16px;
+    background:var(--bg);
+    display:flex;
+    justify-content:center;
+  }
+  .diagram img{ display:none; max-width:100%; }
+  .diagram-fallback{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--ink-soft);
+    font-size:12px;
+    font-family:'IBM Plex Mono', monospace;
+    text-align:center;
+    padding:6px 4px;
+  }
+
+  .question-text{
+    font-size:16px;
+    line-height:1.55;
+    margin-bottom:18px;
+    white-space:pre-line;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    text-align:left;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    background:var(--surface);
+    cursor:pointer;
+    font-size:14.5px;
+    line-height:1.45;
+    min-height:44px;
+  }
+  .option:hover:not(.locked){ border-color:var(--accent); }
+  .option .letter{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:12px;
+    color:var(--ink);
+    background:var(--bg);
+    border-radius:6px;
+    width:22px;height:22px;
+    min-width:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:1px;
+  }
+  .option.correct{ border-color:var(--green); background:var(--green-soft); }
+  .option.correct .letter{ background:var(--green); color:#fff; }
+  .option.incorrect{ border-color:var(--red); background:var(--red-soft); }
+  .option.incorrect .letter{ background:var(--red); color:#fff; }
+  .option.locked{ cursor:default; }
+  .option.dim{ opacity:0.5; }
+  .option.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .option.selected .letter{ background:var(--accent); color:#fff; }
+
+  .feedback-line{
+    display:none;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    margin:12px 0 0;
+    padding:8px 12px;
+    border-radius:7px;
+  }
+  .feedback-line.show{display:flex;}
+  .feedback-line.right{ background:var(--green-soft); color:#1F5A31;}
+  .feedback-line.wrong{ background:var(--red-soft); color:#7A241B;}
+
+  .explain{
+    display:none;
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+  }
+  .explain.show{display:block;}
+  .keyword-chip{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:1px 7px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink);
+  }
+  .explain .body{
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+
+  .nav-row{ margin-top:20px; display:flex; gap:10px; }
+  .nav-row .btn-primary, .nav-row .btn-secondary{ flex:1; width:auto; }
+  .btn-primary{
+    width:100%;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    padding:13px 20px;
+    border-radius:9px;
+    cursor:pointer;
+    min-height:46px;
+  }
+  .btn-primary:hover{background:var(--accent);}
+  .btn-primary:disabled{background:#C7CDCB; cursor:not-allowed;}
+  .btn-secondary{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    padding:12px 18px;
+    border-radius:9px;
+    cursor:pointer;
+    min-height:46px;
+  }
+  .btn-secondary:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* ---------- Results ---------- */
+  .results-score{ text-align:center; padding:6px 0 18px; }
+  .results-score .big{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:48px;
+    line-height:1;
+  }
+  .results-score .of{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:6px;
+  }
+  .results-score .pct{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    padding:4px 12px;
+    border-radius:999px;
+  }
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin:20px 0 8px;
+  }
+  .revise-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:6px;
+    font-size:13.5px;
+  }
+  .revise-item .frac{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--red);
+    padding:2px 8px;
+  }
+  .revise-empty{ text-align:center; color:var(--ink-soft); font-size:13.5px; padding:14px 0; }
+  .review-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(32px,1fr));
+    gap:5px;
+  }
+  .review-grid span{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:32px;
+    border-radius:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    font-weight:600;
+  }
+  .review-grid span.ok{ background:var(--green-soft); color:#1F5A31;}
+  .review-grid span.bad{ background:var(--red-soft); color:#7A241B;}
+  .review-grid span.skip{ background:var(--bg); color:var(--ink-soft); border:1px dashed var(--line);}
+
+  .results-actions{
+    display:flex;
+    gap:10px;
+    margin-top:22px;
+  }
+  .results-actions .btn-primary, .results-actions .btn-secondary{ flex:1; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <span class="brand">O-Level Chemistry Trainer</span>
+    <button class="exit-btn" id="exitBtn" hidden>End session</button>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-meta mono">
+      <span id="progressLabel">1 / 40</span>
+      <span id="progressModeLabel">LEARN</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- SCREEN: MODE SELECT -->
+  <div id="screen-select">
+    <div class="hero">
+      <p>Identify keywords. Deduce topic. Recall concepts.</p>
+    </div>
+
+    <div class="modes">
+      <div class="mode-card" data-mode="learn">
+        <div class="glyph mono">L</div>
+        <div><h3>Learn</h3><p>Pop open topic, concepts &amp; keywords any time — before or after you answer.</p></div>
+      </div>
+      <div class="mode-card" data-mode="practice">
+        <div class="glyph mono">P</div>
+        <div><h3>Practice</h3><p>Right or wrong shown right away. No scaffolding.</p></div>
+      </div>
+      <div class="mode-card" data-mode="exam">
+        <div class="glyph mono">E</div>
+        <div><h3>Exam</h3><p>No feedback until the end — score and topics to revise.</p></div>
+      </div>
+    </div>
+
+    <div class="setup-row">
+      <span>Session length</span>
+      <div class="count-control">
+        <button id="countMinus" aria-label="Decrease">−</button>
+        <span class="n" id="countVal">40</span>
+        <button id="countPlus" aria-label="Increase">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: QUESTION -->
+  <div id="screen-question" style="display:none;">
+    <div class="card">
+      <div class="q-eyebrow">
+        <span><span class="num" id="qNum">Q1</span> / <span id="qTotal">40</span></span>
+        <span id="qModeTag">LEARN</span>
+      </div>
+
+      <button id="reviewBtn" class="review-btn" type="button" style="display:none;">Keywords, topics, concepts. Click to reveal</button>
+
+      <div id="diagramSlot"></div>
+
+      <div class="question-text" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+
+      <div class="feedback-line" id="feedbackLine"></div>
+
+      <div class="explain" id="explainBox">
+        <div class="body" id="explainBody"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-secondary" id="prevBtn">Previous</button>
+        <button class="btn-primary" id="nextBtn" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: RESULTS -->
+  <div id="screen-results" style="display:none;">
+    <div class="card">
+      <div class="results-score">
+        <div class="big" id="scoreBig">0/0</div>
+        <div class="of mono" id="scoreSub">0 correct</div>
+        <div class="pct mono" id="scorePct">0%</div>
+      </div>
+
+      <div class="section-label">Topics to revise</div>
+      <div id="reviseItems"></div>
+
+      <div class="section-label">Question review</div>
+      <div class="review-grid" id="reviewGrid"></div>
+
+      <div class="results-actions">
+        <button class="btn-secondary" id="restartBtn">New session</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <span class="modal-title" id="modalTitle"></span>
+        <button class="modal-x" id="modalCloseBtn" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   QUESTION BANK — 6092/01 Specimen Paper (40 MCQs)
+   ========================================================= */
+const QUESTIONS = [
+{
+  topic:"1.1 Experimental Design",
+  concepts:["1.1(a) Apparatus for measuring volume — burette vs. pipette"],
+  keywords:["25.0 cm³ ... measured", "methyl orange", "end-point"],
+  q:"Aqueous sodium hydroxide is neutralised by dilute hydrochloric acid in a titration.\n25.0 cm³ of aqueous sodium hydroxide is measured into a conical flask using a ...1... and a few drops of methyl orange indicator is added.\nThe dilute hydrochloric acid is added to the flask using a ...2... .\nThe end-point is reached when the methyl orange indicator turns ...3... .\nWhich row completes gaps 1, 2 and 3?",
+  options:[
+    "1: burette · 2: pipette · 3: red",
+    "1: burette · 2: pipette · 3: orange",
+    "1: pipette · 2: burette · 3: orange",
+    "1: pipette · 2: burette · 3: red"
+  ],
+  correct:2,
+  explain:"A pipette delivers one fixed, precisely known volume — for the 25.0 cm³ of alkali. A burette delivers a variable, readable volume — for adding acid gradually. Methyl orange is yellow in alkali and red in excess acid; the end-point itself is the transitional colour, orange."
+},
+{
+  topic:"1.2 Methods of Purification and Analysis",
+  concepts:["1.2(c) Interpreting chromatograms and Rf values"],
+  keywords:["final position of dye", "original spot of dye", "solvent front"],
+  img:"Chromatogram diagram showing x, y, z distances between solvent front, dye spot and origin",
+  q:"The diagram shows a chromatogram of a single dye, with three measured distances x, y and z: x is between the final solvent front and the final dye position; y is between the final dye position and the original spot; z is between the original spot and the original solvent level.\nHow is the Rf value of the dye calculated?",
+  options:["x / (x + y)","y / (x + y)","x / (x + y + z)","y / (x + y + z)"],
+  correct:3,
+  explain:"Rf = (distance moved by the substance) ÷ (distance moved by the solvent). Measured from the original solvent level: the dye moved y, the solvent front moved x + y + z. So Rf = y / (x + y + z)."
+},
+{
+  topic:"1.2 Methods of Purification and Analysis",
+  concepts:["1.2(a)(iv) Separating funnel for immiscible liquids", "1.2(e) Purity from melting/boiling point data"],
+  keywords:["immiscible liquids", "purity of the separated hexane"],
+  q:"Hexane and water are immiscible liquids. Which method could be used to separate a mixture of hexane and water, and how is the purity of the separated hexane checked?",
+  options:[
+    "filtration · find the boiling point",
+    "filtration · by sublimation",
+    "use a separating funnel · find the boiling point",
+    "use a separating funnel · by sublimation"
+  ],
+  correct:2,
+  explain:"Immiscible liquids of different density are separated with a separating funnel — filtration only separates a solid from a liquid. A pure liquid has a single, sharp, fixed boiling point, so measuring hexane's boiling point checks its purity."
+},
+{
+  topic:"2.1 Kinetic Particle Theory",
+  concepts:["2.1(c) Diffusion of particles in gases"],
+  keywords:["more dense than air", "inverted on top", "glass plate is removed"],
+  img:"Two gas jars stacked (NO₂ inverted on top of air) separated by a glass plate",
+  q:"Nitrogen dioxide (dark brown, denser than air) is sealed in a gas jar and inverted on top of a gas jar of air, separated by a glass plate. The glass plate is removed. Which row correctly describes the colours in the upper and lower gas jars after a long period of time?",
+  options:[
+    "upper: brown · lower: brown",
+    "upper: colourless · lower: dark brown",
+    "upper: dark brown · lower: light brown",
+    "upper: light brown · lower: dark brown"
+  ],
+  correct:0,
+  explain:"Placing the denser gas above the lighter one is unstable. Diffusion continues until the NO₂ is spread evenly through both jars, so both end up an identical, uniformly diluted brown colour."
+},
+{
+  topic:"2.2 Atomic Structure",
+  concepts:["2.2(e) Isotopes", "4.2(b) Relative molecular mass"],
+  keywords:["two stable isotopes", "C₂H₃Br₃"],
+  q:"C₂H₃Br₃ contains only ¹²C and ¹H. Bromine has two stable isotopes, ⁷⁹Br and ⁸¹Br. Using these two isotopes, how many different relative molecular masses are possible for C₂H₃Br₃?",
+  options:["2","3","4","5"],
+  correct:2,
+  explain:"With 3 Br atoms, each independently ⁷⁹Br or ⁸¹Br: three ⁷⁹Br; two ⁷⁹Br + one ⁸¹Br; one ⁷⁹Br + two ⁸¹Br; three ⁸¹Br. That's 4 distinct total masses."
+},
+{
+  topic:"3.1 Ionic Bonding",
+  concepts:["3.1(c)–(d) Ionic lattice structure and physical properties"],
+  keywords:["lower melting point", "NaCl", "MgO"],
+  q:"Which statement explains why sodium chloride, NaCl, has a lower melting point than magnesium oxide, MgO?",
+  options:[
+    "Sodium chloride is covalent but magnesium oxide is ionic.",
+    "Sodium is more reactive than magnesium.",
+    "The attraction between Na⁺ and Cl⁻ is weaker than that between Mg²⁺ and O²⁻.",
+    "The melting point of sodium is lower than that of magnesium."
+  ],
+  correct:2,
+  explain:"Both are giant ionic lattices, so melting point depends on ionic attraction strength, which increases with charge. Mg²⁺/O²⁻ attract far more strongly than singly-charged Na⁺/Cl⁻, so MgO needs more energy to melt."
+},
+{
+  topic:"3.2 Covalent Bonding",
+  concepts:["3.2(b)–(c) Dot-and-cross diagrams of covalent bonding"],
+  keywords:["outer shell electrons", "molecule, YZ₂"],
+  img:"Dot-and-cross diagram of molecule YZ₂ showing shared electron pairs",
+  q:"The outer shell electrons in a molecule, YZ₂, are shown in a dot-and-cross diagram (Y central, sharing electrons with two Z atoms). Using the Periodic Table, how many protons are in atom Y?",
+  options:["6","8","12","18"],
+  correct:0,
+  explain:"The diagram shows Y double-bonded to each Z, consistent with a central atom like carbon in CO₂-type structures. An atom with 4 outer-shell electrons forming this pattern is carbon, proton number 6."
+},
+{
+  topic:"3.3 Metallic Bonding",
+  concepts:["3.3(b) Metallic conduction", "8.4(a) Reactivity with dilute acid"],
+  keywords:["conducts electricity...solid state", "reacts with hydrochloric acid"],
+  q:"Substance J conducts electricity when in the solid state. J reacts with hydrochloric acid. Which substance could J be?",
+  options:["copper","copper(II) oxide","sodium chloride","zinc"],
+  correct:3,
+  explain:"Conducting electricity as a solid points to a metal, ruling out the ionic compounds copper(II) oxide and sodium chloride. Copper doesn't react with dilute HCl, but zinc — more reactive than hydrogen — does."
+},
+{
+  topic:"3.3 Metallic Bonding",
+  concepts:["3.3(b) General physical properties of metals"],
+  keywords:["Element X is a metal", "deduced"],
+  q:"Element X is a metal. Using only this information, what can be deduced about element X?",
+  options:["It has a low melting point.","It is a conductor of heat.","It is less dense than water.","It is very reactive."],
+  correct:1,
+  explain:"Melting point, density and reactivity vary hugely between metals, so none of those can be deduced from 'metal' alone. Good thermal conductivity is shared by every metal."
+},
+{
+  topic:"3.4 Structure and Properties of Materials",
+  concepts:["3.4(e)/(g) Giant covalent structures and their properties"],
+  keywords:["silicon carbide, SiC", "strongly heated in oxygen"],
+  img:"Giant covalent lattice diagram of silicon carbide, SiC",
+  q:"The diagram shows the giant covalent (diamond-like) structure of silicon carbide, SiC. Which set of properties does silicon carbide have?",
+  options:[
+    "soft solid · combusts, giving a solid residue only",
+    "soft solid · combusts, leaving no solid residue",
+    "hard solid · combusts, giving a solid residue and a colourless gas",
+    "hard solid · combusts, giving a solid residue only"
+  ],
+  correct:2,
+  explain:"A giant covalent lattice like SiC is a hard solid. On strong heating in oxygen, carbon burns to CO₂ (colourless gas) while silicon forms solid SiO₂ — giving both a residue and a gas."
+},
+{
+  topic:"3.4 Structure and Properties of Materials",
+  concepts:["3.4(f) Structure and properties of diamond and graphite"],
+  keywords:["graphite"],
+  q:"Which statement about graphite is correct?",
+  options:[
+    "It conducts electricity because graphite has ions which are free to move.",
+    "It has an ionic lattice.",
+    "It has the same structure as diamond.",
+    "Its structure contains hexagonal rings of carbon atoms."
+  ],
+  correct:3,
+  explain:"Graphite is a giant covalent structure of carbon in hexagonal rings within flat layers. It conducts because one delocalised electron per atom is free to move — not because of ions."
+},
+{
+  topic:"4.2 The Mole Concept and Stoichiometry",
+  concepts:["4.2(b) Calculating relative molecular mass, Mr"],
+  keywords:["relative molecular mass of propanoic acid"],
+  q:"What is the relative molecular mass of propanoic acid, C₃H₆O₂?",
+  options:["58","60","74","88"],
+  correct:2,
+  explain:"Mr = (3 × 12) + (6 × 1) + (2 × 16) = 36 + 6 + 32 = 74."
+},
+{
+  topic:"4.2 The Mole Concept and Stoichiometry",
+  concepts:["4.2(d) Percentage mass of an element in a compound"],
+  keywords:["highest percentage mass of oxygen"],
+  q:"Which compound contains the highest percentage mass of oxygen? (Al₂O₃, Mr=102 · Co₃O₄, Mr=241 · CuO, Mr=80 · KMnO₄, Mr=158)",
+  options:["Al₂O₃","Co₃O₄","CuO","KMnO₄"],
+  correct:0,
+  explain:"%O = (mass of O ÷ Mr) × 100. Al₂O₃: 48/102 ≈ 47%. Co₃O₄: 64/241 ≈ 27%. CuO: 16/80 = 20%. KMnO₄: 64/158 ≈ 41%. Al₂O₃ is highest."
+},
+{
+  topic:"4.2 The Mole Concept and Stoichiometry",
+  concepts:["4.2(f) Stoichiometric volumes of gases"],
+  keywords:["smallest percentage change in volume"],
+  q:"In which reaction does the smallest percentage change in volume occur?\nA: CH₄(g)+2O₂(g)→CO₂(g)+2H₂O(l)\nB: C₃H₈(g)+5O₂(g)→3CO₂(g)+4H₂O(l)\nC: 2H₂S(g)+SO₂(g)→3S(s)+2H₂O(l)\nD: 4NH₃(g)+3O₂(g)→2N₂(g)+6H₂O(l)",
+  options:["Reaction A","Reaction B","Reaction C","Reaction D"],
+  correct:1,
+  explain:"Only gaseous species count. A: 3→1 mol, 67% change. B: 6→3 mol, 50% change. C: 3→0 mol, 100% change. D: 7→2 mol, ~71% change. Reaction B is smallest."
+},
+{
+  topic:"4.2 The Mole Concept and Stoichiometry",
+  concepts:["4.2(g) Solution concentration and volumetric (titration) calculations"],
+  keywords:["25.0 cm³ ... neutralised by 21.50 cm³"],
+  q:"In a titration, 25.0 cm³ of aqueous KOH is neutralised by 21.50 cm³ of 0.100 mol/dm³ H₂SO₄. What is the concentration of the KOH?",
+  options:["0.002 mol/dm³","0.004 mol/dm³","0.086 mol/dm³","0.172 mol/dm³"],
+  correct:3,
+  explain:"H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O. Moles H₂SO₄ = 0.02150 × 0.100 = 0.00215 mol. Moles KOH = 2 × 0.00215 = 0.00430 mol. Concentration = 0.00430 ÷ 0.0250 = 0.172 mol/dm³."
+},
+{
+  topic:"4.2 The Mole Concept and Stoichiometry",
+  concepts:["4.2(h) Percentage yield"],
+  keywords:["percentage yield of magnesium oxide"],
+  img:"Crucible with lid on a heat source, containing magnesium ribbon",
+  q:"When 4.8 g of magnesium is heated in a crucible, 5.9 g of magnesium oxide is formed. What is the percentage yield of magnesium oxide? (Mg = 24, O = 16)",
+  options:["53%","74%","80%","81%"],
+  correct:1,
+  explain:"Moles Mg = 4.8 ÷ 24 = 0.2 mol. 2Mg + O₂ → 2MgO (1:1), so theoretical MgO = 0.2 × 40 = 8.0 g. % yield = 5.9 ÷ 8.0 × 100 ≈ 74%."
+},
+{
+  topic:"4.1 Formulae and Equation Writing",
+  concepts:["4.1(e) Constructing ionic equations", "5.1(e) Neutralisation"],
+  keywords:["ionic equation", "neutralisation"],
+  q:"Which ionic equation correctly represents the neutralisation of aqueous sodium hydroxide with dilute nitric acid?",
+  options:["H⁺ + OH⁻ → H₂O","Na⁺ + NO₃⁻ → NaNO₃","Na⁺ + HNO₃ → NaNO₃ + H⁺","NaOH + H⁺ → Na⁺ + H₂O"],
+  correct:0,
+  explain:"Spectator ions (Na⁺, NO₃⁻) are removed, leaving only the species that react: H⁺ + OH⁻ → H₂O."
+},
+{
+  topic:"5.2 Salts",
+  concepts:["5.2(b) General rules of solubility for common salts"],
+  keywords:["produce a precipitate when...mixed"],
+  q:"Which pair of aqueous solutions produce a precipitate when mixed?",
+  options:[
+    "barium nitrate and silver nitrate",
+    "sodium chloride and barium nitrate",
+    "sodium nitrate and barium chloride",
+    "sodium sulfate and barium chloride"
+  ],
+  correct:3,
+  explain:"Most nitrates, chlorides and sulfates are soluble, except barium sulfate, silver chloride, and lead salts. Sodium sulfate + barium chloride forms insoluble barium sulfate."
+},
+{
+  topic:"5.2 Salts",
+  concepts:["5.2(a)/(c) Preparation of salts"],
+  keywords:["most suitable reaction for making lead(II) sulfate"],
+  q:"Which equation shows the most suitable reaction for making lead(II) sulfate?",
+  options:[
+    "Pb + H₂SO₄ → PbSO₄ + H₂",
+    "PbCO₃ + H₂SO₄ → PbSO₄ + CO₂ + H₂O",
+    "Pb(NO₃)₂ + H₂SO₄ → PbSO₄ + 2HNO₃",
+    "PbCl₂ + H₂SO₄ → PbSO₄ + 2HCl"
+  ],
+  correct:2,
+  explain:"PbSO₄ is insoluble, so it's best made by precipitation from two soluble reactants. Pb(NO₃)₂ is soluble, giving a clean reaction; PbCO₃, PbCl₂ and solid Pb are all poor starting reagents here."
+},
+{
+  topic:"6. Qualitative Analysis",
+  concepts:["6(b) Test for carbonate ion", "6(a) Test for ammonium ion / ammonia gas"],
+  keywords:["white precipitate with limewater", "turned damp red litmus blue"],
+  q:"Compound X gives a gas with dilute HCl that turns limewater a white precipitate. Warming X with aqueous NaOH gives a gas that turns damp red litmus blue. What is compound X?",
+  options:["ammonium carbonate","ammonium nitrate","calcium carbonate","calcium nitrate"],
+  correct:0,
+  explain:"Gas + limewater → white precipitate identifies CO₂ (a carbonate). Gas + damp red litmus → blue identifies ammonia (an ammonium salt). Only ammonium carbonate has both."
+},
+{
+  topic:"7.1 Oxidation and Reduction",
+  concepts:["7.1(b)–(c) Redox in terms of electron transfer / oxidation state"],
+  keywords:["which are redox reactions"],
+  q:"Which are redox reactions?\n1: 2Fe²⁺ + Cl₂ → 2Fe³⁺ + 2Cl⁻\n2: H₂SO₄ + Zn → ZnSO₄ + H₂\n3: Pb(NO₃)₂ + 2NaCl → PbCl₂ + 2NaNO₃",
+  options:["1, 2 and 3","1 and 2 only","1 and 3 only","2 and 3 only"],
+  correct:1,
+  explain:"Reaction 1: Fe²⁺→Fe³⁺ oxidised, Cl₂→Cl⁻ reduced — redox. Reaction 2: Zn oxidised, H reduced — redox. Reaction 3 is double decomposition — no oxidation state changes."
+},
+{
+  topic:"7.2 Electrochemistry",
+  concepts:["7.2(e)(iii) Concentration effects in electrolysis of aqueous NaCl"],
+  keywords:["concentrated aqueous sodium chloride", "inert electrodes"],
+  q:"Which statement about the electrolysis of concentrated aqueous sodium chloride using inert electrodes is correct?",
+  options:[
+    "Chlorine is released at the cathode.",
+    "Oxygen is released at the cathode.",
+    "Sodium is released at the cathode.",
+    "The pH of the electrolyte increases."
+  ],
+  correct:3,
+  explain:"H⁺ is discharged at the cathode (releasing H₂) and Cl⁻ at the anode (releasing Cl₂), leaving Na⁺ and OH⁻ behind — effectively forming NaOH, so pH increases."
+},
+{
+  topic:"7.2 Electrochemistry",
+  concepts:["7.2(h) Purifying copper using copper electrodes"],
+  keywords:["no change in the concentration of the solution"],
+  q:"In which electrolysis experiment would there be no change in the concentration of the solution?",
+  options:[
+    "aqueous copper(II) sulfate · carbon electrodes",
+    "aqueous copper(II) sulfate · copper electrodes",
+    "concentrated aqueous potassium chloride · carbon electrodes",
+    "dilute sulfuric acid · platinum electrodes"
+  ],
+  correct:1,
+  explain:"With copper electrodes in CuSO₄(aq), copper dissolves from the anode at the same rate it deposits at the cathode — concentration stays constant. Inert electrodes remove ions without replacing them."
+},
+{
+  topic:"7.2 Electrochemistry",
+  concepts:["7.2(j) Simple cells and electron transfer"],
+  keywords:["hydrogen bubbles collect around the copper rod"],
+  img:"Zinc and copper rods dipped in dilute sulfuric acid, tops touching, hydrogen bubbles at copper rod",
+  q:"Rods of copper and zinc are dipped into dilute sulfuric acid, with their tops touching. Hydrogen bubbles collect around the copper rod. Which statement about the experiment is correct?",
+  options:[
+    "Copper reacts with the acid.",
+    "Electrons flow from zinc to copper.",
+    "The zinc becomes coated with copper.",
+    "The zinc is less reactive than copper."
+  ],
+  correct:1,
+  explain:"Zinc, more reactive than copper, is oxidised — losing electrons that travel to the copper rod. There, H⁺ ions gain those electrons and are reduced to H₂ gas."
+},
+{
+  topic:"8.1 Periodic Trends",
+  concepts:["8.1(d) Similarities between elements in the same Group"],
+  keywords:["similar chemical properties"],
+  q:"The element with proton number 12 has similar chemical properties to the element with which proton number?",
+  options:["2","11","20","24"],
+  correct:2,
+  explain:"Proton number 12 is magnesium (Group 2). Proton number 20 is calcium, also Group 2 — same number of outer-shell electrons, similar properties."
+},
+{
+  topic:"8.3 Transition Elements",
+  concepts:["8.3(a)–(b) Transition elements — properties and catalytic behaviour"],
+  keywords:["high melting point", "lower the activation energy"],
+  q:"Element Z has a high melting point, and its presence can lower the activation energy of a reaction. What type of element is Z?",
+  options:["a halogen","an alkali metal","a noble gas","a transition metal"],
+  correct:3,
+  explain:"Transition metals are dense, hard, and have high melting points — unlike alkali metals or noble gases/halogens. They're also well known as catalysts."
+},
+{
+  topic:"8.4 Reactivity Series",
+  concepts:["8.4(a)(ii) Reduction of metal oxides by carbon / reactivity series"],
+  keywords:["reduces the oxide of chromium"],
+  q:"Chromium sits between zinc and iron in the reactivity series. Which element reduces the oxide of chromium?",
+  options:["carbon","copper","iron","lead"],
+  correct:0,
+  explain:"A reducing agent must be more reactive than the metal being extracted. Carbon sits above zinc (and so above chromium), so only carbon here can reduce chromium oxide."
+},
+{
+  topic:"8.4 Reactivity Series",
+  concepts:["8.4(a)(ii) Reduction of metal oxides by hydrogen"],
+  keywords:["colourless liquid collects", "powdered solid"],
+  img:"Dry hydrogen passed over heated powdered solid, then through a cooled U-tube, excess H₂ burning",
+  q:"Dry hydrogen gas is passed over a heated powdered solid, then through a cooled U-tube, before the excess hydrogen is burned in air. A colourless liquid collects in the U-tube. What could the powdered solid be?",
+  options:["calcium oxide","copper(II) oxide","magnesium","zinc oxide"],
+  correct:1,
+  explain:"Hydrogen can only reduce oxides of metals less reactive than hydrogen, like copper: CuO + H₂ → Cu + H₂O. Calcium and zinc oxides are too reactive; magnesium is already the metal, not an oxide."
+},
+{
+  topic:"9. Chemical Energetics",
+  concepts:["9(c)–(d) Bond breaking/making and overall enthalpy change"],
+  keywords:["endothermic reaction", "deduced"],
+  q:"The formation of hydrogen iodide from hydrogen and iodine (H–H + I–I → H–I + H–I) is endothermic. What may be deduced from this information?",
+  options:[
+    "The number of bonds broken is greater than the number of bonds formed.",
+    "The formation of H–I bonds absorbs energy.",
+    "The products possess less energy than the reactants.",
+    "The total energy change in bond formation is less than that in bond breaking."
+  ],
+  correct:3,
+  explain:"Bond breaking always absorbs energy, bond forming always releases it. For the reaction to be endothermic overall, energy released forming bonds must be less than energy needed to break them."
+},
+{
+  topic:"9. Chemical Energetics",
+  concepts:["9(b) Energy profile diagrams"],
+  keywords:["decomposes endothermically", "energy profile diagram"],
+  img:"Four candidate energy profile diagrams (A–D) for CaO + CO₂ → CaCO₃",
+  q:"Calcium carbonate decomposes endothermically into calcium oxide and carbon dioxide. Which energy profile diagram correctly shows the reverse reaction — calcium oxide and carbon dioxide reacting to form calcium carbonate?",
+  options:[
+    "CaO+CO₂ (low) rising to CaCO₃ (high), ΔH upward",
+    "CaCO₃ (high) falling to CaO+CO₂ (low), ΔH downward",
+    "CaCO₃ (high) with ΔH up to CaO+CO₂ shown higher still",
+    "CaO+CO₂ (high) falling to CaCO₃ (low), ΔH downward"
+  ],
+  correct:3,
+  explain:"Decomposition of CaCO₃ is endothermic, so CaCO₃ sits at lower energy than CaO + CO₂. The reverse reaction starts high (CaO + CO₂) and releases energy forming the lower-energy CaCO₃ — exothermic, ΔH downward."
+},
+{
+  topic:"10. Rate of Reactions",
+  concepts:["10(a) Effect of pressure on rate of reaction"],
+  keywords:["pressure least likely to affect the rate"],
+  q:"In which reaction is pressure least likely to affect the rate of reaction?",
+  options:[
+    "C(s) + CO₂(g) → 2CO(g)",
+    "N₂(g) + 3H₂(g) → 2NH₃(g)",
+    "NaOH(aq) + HCl(aq) → NaCl(aq) + H₂O(l)",
+    "2SO₂(g) + O₂(g) → 2SO₃(g)"
+  ],
+  correct:2,
+  explain:"Pressure changes rate mainly for gas-phase reactions by changing particle concentration. A reaction entirely between aqueous solutions has no gas phase, so pressure barely affects it."
+},
+{
+  topic:"10. Rate of Reactions",
+  concepts:["10(a)/(f) Effect of concentration; interpreting rate–time data"],
+  keywords:["effect of the concentration", "total volume of oxygen evolved"],
+  img:"Graph of total O₂ volume vs. time showing curves X, Y and Z",
+  q:"H₂O₂ is decomposed catalytically by MnO₂: 2H₂O₂ → 2H₂O + O₂. Three experiments use: (1) 50 cm³ of 2.0 mol/dm³ H₂O₂; (2) 100 cm³ of 1.0 mol/dm³ H₂O₂; (3) 100 cm³ of 2.0 mol/dm³ H₂O₂ — same mass of catalyst each time. On a graph of total O₂ volume vs. time, curve X rises fastest to the highest plateau; curves Y and Z reach the same (lower) plateau, with Y faster than Z. Which curves relate to solutions 1, 2 and 3?",
+  options:["1:X · 2:Y · 3:Z","1:X · 2:Z · 3:Y","1:Z · 2:X · 3:Y","1:Y · 2:Z · 3:X"],
+  correct:3,
+  explain:"Total O₂ depends on total moles H₂O₂: solutions 1 and 2 both give 0.1 mol (lower plateau), solution 3 gives 0.2 mol (higher plateau, curve X). Rate depends on concentration: solution 1 (2.0 mol/dm³) is faster than solution 2 (1.0 mol/dm³), so 1=Y, 2=Z."
+},
+{
+  topic:"11.2 Hydrocarbons",
+  concepts:["11.2(e) Alkanes — combustion and substitution only"],
+  keywords:["octane", "hydrocarbon found in petrol"],
+  q:"Octane is a hydrocarbon found in petrol. Which statement about octane is correct?",
+  options:[
+    "It can be polymerised.",
+    "It decolourises aqueous bromine.",
+    "It has a lower boiling point than methane.",
+    "It reacts with chlorine by substitution."
+  ],
+  correct:3,
+  explain:"Octane is saturated, so it can't be polymerised and doesn't decolourise bromine water. Its boiling point is higher than methane's, not lower. Its only reaction with chlorine is substitution."
+},
+{
+  topic:"11.2 Hydrocarbons",
+  concepts:["11.2(d) Isomerism"],
+  keywords:["isomer of propanol"],
+  img:"Four candidate structural formulae (A–D) to compare against propanol",
+  q:"Which compound is an isomer of propanol (C₃H₈O)?",
+  options:[
+    "CH₃CH₂CHO (propanal, C₃H₆O)",
+    "CH₂=CH–CH₂OH (C₃H₆O)",
+    "CH₃–O–CH₂CH₃ (methoxyethane, C₃H₈O)",
+    "CH₃CH₂COOH (propanoic acid, C₃H₆O₂)"
+  ],
+  correct:2,
+  explain:"Isomers share the exact same molecular formula. Propanal, the unsaturated alcohol and propanoic acid all differ from C₃H₈O. Methoxyethane, with the atoms rearranged, is C₃H₈O — a true isomer."
+},
+{
+  topic:"11.3 Alcohols, Carboxylic Acids and Esters",
+  concepts:["11.3(g) Carboxylic acids reacting with carbonates"],
+  keywords:["reacts with sodium carbonate to produce carbon dioxide"],
+  img:"Four candidate structural formulae (A–D) tested against sodium carbonate",
+  q:"Which compound reacts with sodium carbonate to produce carbon dioxide?",
+  options:[
+    "CH₃CH₂OH (an alcohol)",
+    "CH₃COOH (a carboxylic acid)",
+    "CH₃CH=CH₂ (an alkene)",
+    "an ester, CH₃COOCH₂CH₃"
+  ],
+  correct:1,
+  explain:"Releasing CO₂ from a carbonate is the classic test for the carboxylic acid (–COOH) group. Alcohols, alkenes and esters don't react with carbonates this way."
+},
+{
+  topic:"11.3 Alcohols, Carboxylic Acids and Esters",
+  concepts:["11.3(j) Deducing acid and alcohol from an ester"],
+  keywords:["acid and alcohol react together to form the compound shown"],
+  q:"Which acid and alcohol react together to form the ester CH₃CH₂–C(=O)–OCH₃?",
+  options:["ethanoic acid and ethanol","ethanoic acid and methanol","propanoic acid and ethanol","propanoic acid and methanol"],
+  correct:3,
+  explain:"Split at the C(=O)–O bond: CH₃CH₂–C(=O)– comes from propanoic acid; –OCH₃ comes from methanol. So the ester forms from propanoic acid and methanol."
+},
+{
+  topic:"11.4 Polymers",
+  concepts:["11.4(d) Deducing monomer from a polymer's structure"],
+  keywords:["partial structure of a polymer", "could be used to make this polymer"],
+  img:"Partial structure of an addition polymer, repeat unit shown",
+  q:"A polymer's repeat unit is –(CH₂–CH(OCOCH₃)–CH₂–CH(OCOCH₃))ₙ– , with only a carbon backbone (no atoms lost between units). Which monomer could be used to make this polymer?",
+  options:[
+    "CH₃CO₂CH=CH₂ (vinyl acetate)",
+    "CH₃CO₂H and HOCH₂CH₂OH",
+    "CH₃COCH=CH₂",
+    "CH₃CO₂CH₃ and HOCH₂CH₂OH"
+  ],
+  correct:0,
+  explain:"A pure carbon backbone with nothing lost between units signals addition polymerisation, needing one monomer with a C=C bond. CH₃CO₂CH=CH₂ has that bond; the acid+alcohol options describe condensation polymers instead."
+},
+{
+  topic:"11.4 Polymers",
+  concepts:["11.4(i) Depolymerisation / hydrolysis of polyesters"],
+  keywords:["recycling a polymer", "catalysed hydrolysis"],
+  img:"Equation for acid-catalysed hydrolysis of a polyester into diacid and diol",
+  q:"A polymer + water, with H⁺ catalyst, hydrolyses to give a diacid (HO-OC–◻–CO-OH) and a diol (HO–▪–OH). Which statements are correct?\n1: The polymer could be nylon.\n2: The reaction is catalysed hydrolysis.\n3: If ▪ is CH₂CH₂, the alcohol product has Mr = 62.",
+  options:["1, 2 and 3","1 and 3 only","2 and 3 only","1 and 2 only"],
+  correct:2,
+  explain:"A diacid + diol product pattern matches hydrolysis of a polyester's ester linkages — nylon (a polyamide) would give a diamine instead, ruling out statement 1. H⁺ catalyses this hydrolysis (statement 2). HOCH₂CH₂OH has Mr = 62 (statement 3). So 2 and 3 only."
+},
+{
+  topic:"11.4 Polymers",
+  concepts:["11.4(e) Partial structure of Terylene"],
+  keywords:["structure of Terylene"],
+  img:"Four candidate partial structures (A–D) for Terylene",
+  q:"Which diagram represents the structure of Terylene?",
+  options:[
+    "repeat unit joined by amide (–CO–NH–) linkages",
+    "repeat unit joined by ester (–CO–O–) linkages",
+    "repeat unit joined by direct C–C bonds only (addition polymer)",
+    "repeat unit with alternating ester groups but no linking chain"
+  ],
+  correct:1,
+  explain:"Terylene is a polyester, made from a diacid and a diol, linked by ester groups (–C(=O)–O–) — not amide links (nylon) and not a plain carbon backbone (addition polymer)."
+},
+{
+  topic:"12. Maintaining Air Quality",
+  concepts:["12(d)(ii) Use of calcium carbonate in flue gas desulfurisation"],
+  keywords:["flue gas desulfurisation"],
+  q:"Which compound is used in flue gas desulfurisation?",
+  options:["calcium carbonate","carbon monoxide","copper(II) oxide","potassium manganate(VII)"],
+  correct:0,
+  explain:"Flue gas desulfurisation removes acidic sulfur dioxide by reacting it with an alkaline compound — powdered calcium carbonate (limestone) is used industrially."
+}
+];
+
+/* =========================================================
+   STATE & LOGIC
+   ========================================================= */
+let mode = null;
+let sessionCount = 40;
+let order = [];
+let current = 0;
+let answers = []; // indexed by session position: null (unanswered) or {chosen, correct}
+
+const el = id => document.getElementById(id);
+
+function shuffleIdx(n){
+  const arr = Array.from({length:n}, (_,i)=>i);
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+/* ---------- Modal ---------- */
+function openModal(title, bodyHTML, actionsHTML){
+  el('modalTitle').textContent = title;
+  el('modalBody').innerHTML = bodyHTML;
+  el('modalActions').innerHTML = actionsHTML || '';
+  el('modalBackdrop').hidden = false;
+}
+function closeModal(){
+  el('modalBackdrop').hidden = true;
+}
+el('modalCloseBtn').addEventListener('click', closeModal);
+el('modalBackdrop').addEventListener('click', (e)=>{
+  if(e.target.id==='modalBackdrop') closeModal();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Escape' && !el('modalBackdrop').hidden) closeModal();
+});
+
+function openTopicsModal(Q){
+  const body = `
+    <div class="modal-section">
+      <div class="modal-label">Keywords in the question</div>
+      <div class="taglist">${Q.keywords.map(k=>`<span class="keyword-chip">${k}</span>`).join('')}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Topic</div>
+      <div class="taglist"><span class="tag topic">${Q.topic}</span></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Concepts tested</div>
+      <div class="taglist">${Q.concepts.map(c=>`<span class="tag">${c}</span>`).join('')}</div>
+    </div>
+  `;
+  openModal('Keywords, topic & concepts', body, '');
+}
+
+function openExitModal(){
+  const body = `<p style="margin:0;">Your progress in this session will be lost. End the session and return to mode select?</p>`;
+  const actions = `
+    <button class="btn-secondary" id="exitCancelBtn" type="button">Cancel</button>
+    <button class="btn-primary" id="exitConfirmBtn" type="button">End session</button>
+  `;
+  openModal('End session?', body, actions);
+  el('exitCancelBtn').addEventListener('click', closeModal);
+  el('exitConfirmBtn').addEventListener('click', ()=>{
+    closeModal();
+    goToSelect();
+  });
+}
+
+/* ---------- Setup screen ---------- */
+el('countVal').textContent = sessionCount;
+el('countMinus').addEventListener('click', ()=>{
+  sessionCount = Math.max(5, sessionCount-5);
+  el('countVal').textContent = sessionCount;
+});
+el('countPlus').addEventListener('click', ()=>{
+  sessionCount = Math.min(QUESTIONS.length, sessionCount+5);
+  el('countVal').textContent = sessionCount;
+});
+
+document.querySelectorAll('.mode-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    mode = card.dataset.mode;
+    startSession();
+  });
+});
+
+el('exitBtn').addEventListener('click', openExitModal);
+el('restartBtn').addEventListener('click', goToSelect);
+
+function goToSelect(){
+  el('screen-select').style.display='block';
+  el('screen-question').style.display='none';
+  el('screen-results').style.display='none';
+  el('progressWrap').classList.remove('active');
+  el('exitBtn').hidden = true;
+}
+
+function startSession(){
+  const n = Math.min(sessionCount, QUESTIONS.length);
+  order = shuffleIdx(QUESTIONS.length).slice(0,n);
+  current = 0;
+  answers = new Array(order.length).fill(null);
+  el('screen-select').style.display='none';
+  el('screen-results').style.display='none';
+  el('screen-question').style.display='block';
+  el('progressWrap').classList.add('active');
+  el('exitBtn').hidden = false;
+  el('progressModeLabel').textContent = mode.toUpperCase();
+  renderQuestion();
+}
+
+function diagramHTML(altText){
+  const escAlt = altText.replace(/"/g,'&quot;');
+  return `<div class="diagram">
+    <img src="/thechemclassroom/images/xx.jpg" alt="${escAlt}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="diagram-fallback">▢ ${altText}</div>
+  </div>`;
+}
+
+function renderQuestion(){
+  const qIdx = order[current];
+  const Q = QUESTIONS[qIdx];
+  const state = answers[current]; // null or {chosen, correct}
+  const isLastAnswerable = mode==='exam' ? false : (state !== null);
+
+  el('qNum').textContent = 'Q' + (current+1);
+  el('qTotal').textContent = order.length;
+  el('qModeTag').textContent = mode.toUpperCase();
+  el('progressLabel').textContent = (current+1) + ' / ' + order.length;
+  el('progressFill').style.width = (((current)/order.length)*100) + '%';
+
+  el('diagramSlot').innerHTML = Q.img ? diagramHTML(Q.img) : '';
+  el('qText').textContent = Q.q;
+
+  if(mode==='learn'){
+    const btn = el('reviewBtn');
+    btn.style.display='flex';
+    btn.onclick = ()=> openTopicsModal(Q);
+  } else {
+    el('reviewBtn').style.display='none';
+  }
+
+  const optWrap = el('qOptions');
+  optWrap.innerHTML='';
+  const letters=['A','B','C','D'];
+  const locked = state!==null && mode!=='exam';
+  Q.options.forEach((optText, i)=>{
+    const div = document.createElement('div');
+    div.className='option';
+    div.innerHTML = `<span class="letter">${letters[i]}</span><span>${optText}</span>`;
+    if(state!==null){
+      if(mode==='exam'){
+        if(i===state.chosen) div.classList.add('selected');
+      } else {
+        div.classList.add('locked');
+        if(i===Q.correct) div.classList.add('correct');
+        else if(i===state.chosen) div.classList.add('incorrect');
+        else div.classList.add('dim');
+      }
+    }
+    div.addEventListener('click', ()=> selectOption(i));
+    optWrap.appendChild(div);
+  });
+
+  const fb = el('feedbackLine');
+  fb.className='feedback-line';
+  fb.textContent='';
+  if(state!==null && mode!=='exam'){
+    fb.classList.add('show');
+    if(state.correct){ fb.classList.add('right'); fb.textContent = 'Correct'; }
+    else { fb.classList.add('wrong'); fb.textContent = 'Not quite — correct answer above'; }
+  }
+
+  const explainBox = el('explainBox');
+  explainBox.className='explain';
+  if(state!==null && mode==='learn'){
+    explainBox.classList.add('show');
+    el('explainBody').textContent = Q.explain;
+  }
+
+  el('prevBtn').disabled = (current===0);
+  const nextBtn = el('nextBtn');
+  nextBtn.disabled = !(state!==null || mode==='exam');
+  nextBtn.textContent = (current === order.length-1) ? 'Finish' : 'Next';
+}
+
+function selectOption(i){
+  const state = answers[current];
+  if(state!==null && mode!=='exam') return; // locked outside exam mode
+  const qIdx = order[current];
+  const Q = QUESTIONS[qIdx];
+  const isCorrect = (i === Q.correct);
+  answers[current] = {chosen:i, correct:isCorrect};
+  renderQuestion();
+}
+
+el('prevBtn').addEventListener('click', ()=>{
+  if(current>0){
+    current--;
+    renderQuestion();
+  }
+});
+
+el('nextBtn').addEventListener('click', ()=>{
+  if(current < order.length-1){
+    current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults(){
+  el('screen-question').style.display='none';
+  el('screen-results').style.display='block';
+  el('progressWrap').classList.remove('active');
+  el('exitBtn').hidden = true;
+
+  const total = order.length;
+  const score = answers.filter(a=>a && a.correct).length;
+  el('scoreBig').textContent = score + '/' + total;
+  el('scoreSub').textContent = score + ' correct out of ' + total;
+  const pct = Math.round((score/total)*100);
+  const pctEl = el('scorePct');
+  pctEl.textContent = pct + '%';
+  pctEl.style.background = pct>=70 ? 'var(--green-soft)' : pct>=40 ? '#F3ECD9' : 'var(--red-soft)';
+  pctEl.style.color = pct>=70 ? '#1F5A31' : pct>=40 ? '#7A5308' : '#7A241B';
+
+  const wrongByTopic = {};
+  const totalByTopic = {};
+  answers.forEach((a,i)=>{
+    if(a===null) return;
+    const t = QUESTIONS[order[i]].topic;
+    totalByTopic[t] = (totalByTopic[t]||0)+1;
+    if(!a.correct) wrongByTopic[t] = (wrongByTopic[t]||0)+1;
+  });
+  const reviseWrap = el('reviseItems');
+  reviseWrap.innerHTML='';
+  const topics = Object.keys(wrongByTopic).sort((a,b)=>wrongByTopic[b]-wrongByTopic[a]);
+  if(topics.length===0){
+    reviseWrap.innerHTML = '<div class="revise-empty">No missed topics — clean sweep.</div>';
+  } else {
+    topics.forEach(t=>{
+      const div = document.createElement('div');
+      div.className='revise-item';
+      div.innerHTML = `<span>${t}</span><span class="frac mono">${wrongByTopic[t]}/${totalByTopic[t]} missed</span>`;
+      reviseWrap.appendChild(div);
+    });
+  }
+
+  const grid = el('reviewGrid');
+  grid.innerHTML='';
+  answers.forEach((a,i)=>{
+    const cell = document.createElement('span');
+    cell.textContent = i+1;
+    cell.className = a===null ? 'skip' : (a.correct ? 'ok' : 'bad');
+    grid.appendChild(cell);
+  });
+}
+</script>
+</body>
+</html>
