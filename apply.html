@@ -301,7 +301,7 @@
   }
   .diagram img{ display:none; max-width:100%; }
   .diagram-fallback{
-    display:flex;
+    display:none;
     align-items:center;
     gap:8px;
     color:var(--ink-soft);
@@ -636,7 +636,7 @@ const QUESTIONS = [
   concepts:["1.2(c) Interpreting chromatograms and Rf values"],
   keywords:["final position of dye", "original spot of dye", "solvent front"],
   img:"Chromatogram diagram showing x, y, z distances between solvent front, dye spot and origin",
-  imageFile:"a1.jpg",
+  imageFile:"xx.jpg",
   q:"The diagram shows a chromatogram of a single dye, with three measured distances x, y and z: x is between the final solvent front and the final dye position; y is between the final dye position and the original spot; z is between the original spot and the original solvent level.\nHow is the Rf value of the dye calculated?",
   options:["x / (x + y)","y / (x + y)","x / (x + y + z)","y / (x + y + z)"],
   correct:3,
@@ -661,7 +661,7 @@ const QUESTIONS = [
   concepts:["2.1(c) Diffusion of particles in gases"],
   keywords:["more dense than air", "inverted on top", "glass plate is removed"],
   img:"Two gas jars stacked (NO₂ inverted on top of air) separated by a glass plate",
-  imageFile:"a2.jpg",
+  imageFile:"xx.jpg",
   q:"Nitrogen dioxide (dark brown, denser than air) is sealed in a gas jar and inverted on top of a gas jar of air, separated by a glass plate. The glass plate is removed. Which row correctly describes the colours in the upper and lower gas jars after a long period of time?",
   options:[
     "upper: brown · lower: brown",
@@ -700,7 +700,7 @@ const QUESTIONS = [
   concepts:["3.2(b)–(c) Dot-and-cross diagrams of covalent bonding"],
   keywords:["outer shell electrons", "molecule, YZ₂"],
   img:"Dot-and-cross diagram of molecule YZ₂ showing shared electron pairs",
-  imageFile:"a3.jpg",
+  imageFile:"xx.jpg",
   q:"The outer shell electrons in a molecule, YZ₂, are shown in a dot-and-cross diagram (Y central, sharing electrons with two Z atoms). Using the Periodic Table, how many protons are in atom Y?",
   options:["6","8","12","18"],
   correct:0,
@@ -729,7 +729,7 @@ const QUESTIONS = [
   concepts:["3.4(e)/(g) Giant covalent structures and their properties"],
   keywords:["silicon carbide, SiC", "strongly heated in oxygen"],
   img:"Giant covalent lattice diagram of silicon carbide, SiC",
-  imageFile:"a4.jpg",
+  imageFile:"xx.jpg",
   q:"The diagram shows the giant covalent (diamond-like) structure of silicon carbide, SiC. Which set of properties does silicon carbide have?",
   options:[
     "soft solid · combusts, giving a solid residue only",
@@ -795,7 +795,7 @@ const QUESTIONS = [
   concepts:["4.2(h) Percentage yield"],
   keywords:["percentage yield of magnesium oxide"],
   img:"Crucible with lid on a heat source, containing magnesium ribbon",
-  imageFile:"a5.jpg",
+  imageFile:"xx.jpg",
   q:"When 4.8 g of magnesium is heated in a crucible, 5.9 g of magnesium oxide is formed. What is the percentage yield of magnesium oxide? (Mg = 24, O = 16)",
   options:["53%","74%","80%","81%"],
   correct:1,
@@ -889,7 +889,7 @@ const QUESTIONS = [
   concepts:["7.2(j) Simple cells and electron transfer"],
   keywords:["hydrogen bubbles collect around the copper rod"],
   img:"Zinc and copper rods dipped in dilute sulfuric acid, tops touching, hydrogen bubbles at copper rod",
-  imageFile:"a6.jpg",
+  imageFile:"xx.jpg",
   q:"Rods of copper and zinc are dipped into dilute sulfuric acid, with their tops touching. Hydrogen bubbles collect around the copper rod. Which statement about the experiment is correct?",
   options:[
     "Copper reacts with the acid.",
@@ -932,7 +932,7 @@ const QUESTIONS = [
   concepts:["8.4(a)(ii) Reduction of metal oxides by hydrogen"],
   keywords:["colourless liquid collects", "powdered solid"],
   img:"Dry hydrogen passed over heated powdered solid, then through a cooled U-tube, excess H₂ burning",
-  imageFile:"a7.jpg",
+  imageFile:"xx.jpg",
   q:"Dry hydrogen gas is passed over a heated powdered solid, then through a cooled U-tube, before the excess hydrogen is burned in air. A colourless liquid collects in the U-tube. What could the powdered solid be?",
   options:["calcium oxide","copper(II) oxide","magnesium","zinc oxide"],
   correct:1,
@@ -957,7 +957,7 @@ const QUESTIONS = [
   concepts:["9(b) Energy profile diagrams"],
   keywords:["decomposes endothermically", "energy profile diagram"],
   img:"Four candidate energy profile diagrams (A–D) for CaO + CO₂ → CaCO₃",
-  imageFile:"a8.jpg",
+  imageFile:"xx.jpg",
   q:"Calcium carbonate decomposes endothermically into calcium oxide and carbon dioxide. Which energy profile diagram correctly shows the reverse reaction — calcium oxide and carbon dioxide reacting to form calcium carbonate?",
   options:[
     "CaO+CO₂ (low) rising to CaCO₃ (high), ΔH upward",
@@ -987,7 +987,7 @@ const QUESTIONS = [
   concepts:["10(a)/(f) Effect of concentration; interpreting rate–time data"],
   keywords:["effect of the concentration", "total volume of oxygen evolved"],
   img:"Graph of total O₂ volume vs. time showing curves X, Y and Z",
-  imageFile:"a9.jpg",
+  imageFile:"xx.jpg",
   q:"H₂O₂ is decomposed catalytically by MnO₂: 2H₂O₂ → 2H₂O + O₂. Three experiments use: (1) 50 cm³ of 2.0 mol/dm³ H₂O₂; (2) 100 cm³ of 1.0 mol/dm³ H₂O₂; (3) 100 cm³ of 2.0 mol/dm³ H₂O₂ — same mass of catalyst each time. On a graph of total O₂ volume vs. time, curve X rises fastest to the highest plateau; curves Y and Z reach the same (lower) plateau, with Y faster than Z. Which curves relate to solutions 1, 2 and 3?",
   options:["1:X · 2:Y · 3:Z","1:X · 2:Z · 3:Y","1:Z · 2:X · 3:Y","1:Y · 2:Z · 3:X"],
   correct:3,
@@ -1012,7 +1012,7 @@ const QUESTIONS = [
   concepts:["11.2(d) Isomerism"],
   keywords:["isomer of propanol"],
   img:"Four candidate structural formulae (A–D) to compare against propanol",
-  imageFile:"a10.jpg",
+  imageFile:"xx.jpg",
   q:"Which compound is an isomer of propanol (C₃H₈O)?",
   options:[
     "CH₃CH₂CHO (propanal, C₃H₆O)",
@@ -1028,7 +1028,7 @@ const QUESTIONS = [
   concepts:["11.3(g) Carboxylic acids reacting with carbonates"],
   keywords:["reacts with sodium carbonate to produce carbon dioxide"],
   img:"Four candidate structural formulae (A–D) tested against sodium carbonate",
-  imageFile:"a11.jpg",
+  imageFile:"xx.jpg",
   q:"Which compound reacts with sodium carbonate to produce carbon dioxide?",
   options:[
     "CH₃CH₂OH (an alcohol)",
@@ -1053,7 +1053,7 @@ const QUESTIONS = [
   concepts:["11.4(d) Deducing monomer from a polymer's structure"],
   keywords:["partial structure of a polymer", "could be used to make this polymer"],
   img:"Partial structure of an addition polymer, repeat unit shown",
-  imageFile:"a13.jpg",
+  imageFile:"xx.jpg",
   q:"A polymer's repeat unit is –(CH₂–CH(OCOCH₃)–CH₂–CH(OCOCH₃))ₙ– , with only a carbon backbone (no atoms lost between units). Which monomer could be used to make this polymer?",
   options:[
     "CH₃CO₂CH=CH₂ (vinyl acetate)",
@@ -1069,7 +1069,7 @@ const QUESTIONS = [
   concepts:["11.4(i) Depolymerisation / hydrolysis of polyesters"],
   keywords:["recycling a polymer", "catalysed hydrolysis"],
   img:"Equation for acid-catalysed hydrolysis of a polyester into diacid and diol",
-  imageFile:"a14.jpg",
+  imageFile:"xx.jpg",
   q:"A polymer + water, with H⁺ catalyst, hydrolyses to give a diacid (HO-OC–◻–CO-OH) and a diol (HO–▪–OH). Which statements are correct?\n1: The polymer could be nylon.\n2: The reaction is catalysed hydrolysis.\n3: If ▪ is CH₂CH₂, the alcohol product has Mr = 62.",
   options:["1, 2 and 3","1 and 3 only","2 and 3 only","1 and 2 only"],
   correct:2,
@@ -1080,7 +1080,7 @@ const QUESTIONS = [
   concepts:["11.4(e) Partial structure of Terylene"],
   keywords:["structure of Terylene"],
   img:"Four candidate partial structures (A–D) for Terylene",
-  imageFile:"a15.jpg",
+  imageFile:"xx.jpg",
   q:"Which diagram represents the structure of Terylene?",
   options:[
     "repeat unit joined by amide (–CO–NH–) linkages",
@@ -1219,7 +1219,7 @@ function diagramHTML(altText, imageFile){
   const escAlt = altText.replace(/"/g,'&quot;');
   const src = '/thechemclassroom/images/' + (imageFile || 'xx.jpg');
   return `<div class="diagram">
-    <img src="${src}" alt="${escAlt}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <img src="${src}" alt="${escAlt}" onload="this.style.display='block';" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
     <div class="diagram-fallback">▢ ${altText}</div>
   </div>`;
 }
