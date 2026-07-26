@@ -318,6 +318,19 @@
     white-space:pre-line;
   }
 
+  .options-header{
+    display:flex;
+    gap:12px;
+    padding:0 14px 6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .options-header span{ flex:1; }
+  .options-header .letter-spacer{ width:22px; min-width:22px; flex:none; }
+
   .options{
     display:flex;
     flex-direction:column;
@@ -564,6 +577,7 @@
 
       <div class="question-text" id="qText"></div>
       <div id="diagramSlotAfter"></div>
+      <div class="options-header" id="optionsHeader" style="display:none;"></div>
       <div class="options" id="qOptions"></div>
 
       <div class="feedback-line" id="feedbackLine"></div>
@@ -629,6 +643,7 @@ const QUESTIONS = [
     "1: pipette · 2: burette · 3: orange",
     "1: pipette · 2: burette · 3: red"
   ],
+  optionsHeader:["1","2","3"],
   correct:2,
   explain:"A pipette delivers one fixed, precisely known volume — for the 25.0 cm³ of alkali. A burette delivers a variable, readable volume — for adding acid gradually. Methyl orange is yellow in alkali and red in excess acid; the end-point itself is the transitional colour, orange."
 },
@@ -640,8 +655,8 @@ const QUESTIONS = [
   imageFile:"a1.jpg",
   q:"The diagram shows the chromatogram obtained by analysis of a single dye.\nThree measurements are shown.\nHow is the Rf value of the dye calculated?",
   options:["x / (x + y)","y / (x + y)","x / (x + y + z)","y / (x + y + z)"],
-  correct:3,
-  explain:"Rf = (distance moved by the substance) ÷ (distance moved by the solvent). Measured from the original solvent level: the dye moved y, the solvent front moved x + y + z. So Rf = y / (x + y + z)."
+  correct:1,
+  explain:"Both distances are measured from the origin — the start line where the dye was spotted — not from the original solvent level. The dye travelled y from the origin. The solvent front travelled x + y from the origin. So Rf = y / (x + y). The z distance, between the origin and the original solvent level, is just the gap kept above the solvent in the tank so the spot doesn't dissolve straight into it — it plays no part in the Rf calculation."
 },
 {
   topic:"1.2 Methods of Purification and Analysis",
@@ -649,10 +664,10 @@ const QUESTIONS = [
   keywords:["immiscible liquids", "purity of the separated hexane"],
   q:"Hexane and water are immiscible liquids.\nWhich method could be used to separate a mixture of hexane and water and how is the purity of the separated hexane checked?",
   options:[
-    "filtration · find the boiling point",
-    "filtration · by sublimation",
-    "use a separating funnel · find the boiling point",
-    "use a separating funnel · by sublimation"
+    "method of separation: filtration · purity check: find the boiling point",
+    "method of separation: filtration · purity check: by sublimation",
+    "method of separation: use a separating funnel · purity check: find the boiling point",
+    "method of separation: use a separating funnel · purity check: by sublimation"
   ],
   correct:2,
   explain:"Immiscible liquids of different density are separated with a separating funnel — filtration only separates a solid from a liquid. A pure liquid has a single, sharp, fixed boiling point, so measuring hexane's boiling point checks its purity."
@@ -665,10 +680,10 @@ const QUESTIONS = [
   imageFile:"a2.jpg",
   q:"Nitrogen dioxide is a dark brown gas and is more dense than air.\nA gas jar containing nitrogen dioxide is sealed with a glass plate and is then inverted on top of a gas jar containing air.\nThe glass plate is removed.\nWhich row correctly describes the colours inside the gas jars after a long period of time? The gases are at room temperature and pressure.",
   options:[
-    "upper: brown · lower: brown",
-    "upper: colourless · lower: dark brown",
-    "upper: dark brown · lower: light brown",
-    "upper: light brown · lower: dark brown"
+    "upper gas jar: brown · lower gas jar: brown",
+    "upper gas jar: colourless · lower gas jar: dark brown",
+    "upper gas jar: dark brown · lower gas jar: light brown",
+    "upper gas jar: light brown · lower gas jar: dark brown"
   ],
   correct:0,
   explain:"Placing the denser gas above the lighter one is unstable. Diffusion continues until the NO₂ is spread evenly through both jars, so both end up an identical, uniformly diluted brown colour."
@@ -733,10 +748,10 @@ const QUESTIONS = [
   imageFile:"a4.jpg",
   q:"The diagram shows the structure of silicon carbide, SiC.\nWhich set of properties does silicon carbide have?",
   options:[
-    "soft solid · combusts, giving a solid residue only",
-    "soft solid · combusts, leaving no solid residue",
-    "hard solid · combusts, giving a solid residue and a colourless gas",
-    "hard solid · combusts, giving a solid residue only"
+    "physical state: soft solid · when strongly heated in oxygen: combusts, giving a solid residue only",
+    "physical state: soft solid · when strongly heated in oxygen: combusts, leaving no solid residue",
+    "physical state: hard solid · when strongly heated in oxygen: combusts, giving a solid residue and a colourless gas",
+    "physical state: hard solid · when strongly heated in oxygen: combusts, giving a solid residue only"
   ],
   correct:2,
   explain:"A giant covalent lattice like SiC is a hard solid. On strong heating in oxygen, carbon burns to CO₂ (colourless gas) while silicon forms solid SiO₂ — giving both a residue and a gas."
@@ -882,10 +897,10 @@ const QUESTIONS = [
   keywords:["no change in the concentration of the solution"],
   q:"In which electrolysis experiment would there be no change in the concentration of the solution?",
   options:[
-    "aqueous copper(II) sulfate · carbon",
-    "aqueous copper(II) sulfate · copper",
-    "concentrated aqueous potassium chloride · carbon",
-    "dilute sulfuric acid · platinum"
+    "electrolyte: aqueous copper(II) sulfate · electrodes: carbon",
+    "electrolyte: aqueous copper(II) sulfate · electrodes: copper",
+    "electrolyte: concentrated aqueous potassium chloride · electrodes: carbon",
+    "electrolyte: dilute sulfuric acid · electrodes: platinum"
   ],
   correct:1,
   explain:"With copper electrodes in CuSO₄(aq), copper dissolves from the anode at the same rate it deposits at the cathode — concentration stays constant. Inert electrodes remove ions without replacing them."
@@ -1038,7 +1053,7 @@ const QUESTIONS = [
   concepts:["11.3(j) Deducing acid and alcohol from an ester"],
   keywords:["acid and alcohol react together to form the compound shown"],
   img:"Structural formula of the ester CH₃CH₂–C(=O)–OCH₃",
-  imageFile:"a12.jpg",
+  imageFile:"a15.jpg",
   q:"Which acid and alcohol react together to form the compound shown?",
   options:["ethanoic acid and ethanol","ethanoic acid and methanol","propanoic acid and ethanol","propanoic acid and methanol"],
   correct:3,
@@ -1049,7 +1064,7 @@ const QUESTIONS = [
   concepts:["11.4(d) Deducing monomer from a polymer's structure"],
   keywords:["partial structure of a polymer", "could be used to make this polymer"],
   img:"Partial structure of an addition polymer, repeat unit shown",
-  imageFile:"a13.jpg",
+  imageFile:"a12.jpg",
   q:"The diagram shows the partial structure of a polymer.\nWhich of the following could be used to make this polymer?",
   options:[
     "CH₃CO₂CH=CH₂",
@@ -1065,7 +1080,7 @@ const QUESTIONS = [
   concepts:["11.4(i) Depolymerisation / hydrolysis of polyesters"],
   keywords:["recycling a polymer", "catalysed hydrolysis"],
   img:"Equation for acid-catalysed hydrolysis of a polyester into diacid and diol",
-  imageFile:"a14.jpg",
+  imageFile:"a13.jpg",
   q:"The equation for one method of recycling a polymer is shown.\nWhich statements are correct?\n1 The polymer could be nylon.\n2 The reaction is catalysed hydrolysis.\n3 If ▪ is CH₂CH₂, the alcohol product has Mr = 62.",
   options:["1, 2 and 3","1 and 3 only","2 and 3 only","1 and 2 only"],
   correct:2,
@@ -1076,7 +1091,7 @@ const QUESTIONS = [
   concepts:["11.4(e) Partial structure of Terylene"],
   keywords:["structure of Terylene"],
   img:"Four candidate partial structures (A–D) for Terylene",
-  imageFile:"a15.jpg",
+  imageFile:"a14.jpg",
   imgAfter:true,
   q:"Which diagram represents the structure of Terylene?",
   options:["","","",""],
@@ -1236,6 +1251,15 @@ function renderQuestion(){
     el('diagramSlotAfter').innerHTML = '';
   }
   el('qText').textContent = Q.q;
+
+  const headerEl = el('optionsHeader');
+  if(Q.optionsHeader){
+    headerEl.style.display = 'flex';
+    headerEl.innerHTML = '<span class="letter-spacer"></span>' + Q.optionsHeader.map(h => `<span>${h}</span>`).join('');
+  } else {
+    headerEl.style.display = 'none';
+    headerEl.innerHTML = '';
+  }
 
   if(mode==='learn'){
     const btn = el('reviewBtn');
